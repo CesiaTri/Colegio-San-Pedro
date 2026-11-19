@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Tutor - Colegio "San Pedro"</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+        .barra-superior {
+            background-color: #1e3a8a;
+            color: white;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn-menu {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-menu:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .titulo-rol {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- MENÚ LATERAL DESPLEGABLE --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 150;
+        }
+
+        .overlay.activo {
+            display: block;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: left 0.3s ease;
+            z-index: 200;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+
+        .menu-lateral.abierto {
+            left: 0;
+        }
+
+        .menu-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .menu-encabezado span {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .btn-cerrar-menu {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .lista-opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .opcion-menu {
+            display: block;
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .opcion-menu:hover, .opcion-menu.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        /* Estilos de Sección de Estudiantes en el Menú */
+        .seccion-titulo {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin: 15px 0 5px 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-desplegable-item {
+            position: relative;
+        }
+
+        .btn-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-desplegable::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        /* Submenús con nombres de estudiantes */
+        .sub-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 15px;
+            margin: 4px 0 8px 0;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        .sub-menu.abierto {
+            display: flex;
+        }
+
+        .sub-opcion {
+            text-decoration: none;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sub-opcion:hover {
+            background-color: #f1f5f9;
+            color: #1d4ed8;
+        }
+
+        /* Botón Cerrar Sesión al final */
+        .btn-cerrar-sesion {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-cerrar-sesion:hover {
+            background-color: #fecaca;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .contenedor-contenido {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            gap: 25px;
+        }
+
+        .panel-datos {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 35px 40px;
+            border-top: 5px solid #1e3a8a;
+        }
+
+        .panel-datos h2 {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .subtitulo-seccion {
+            color: #1e3a8a;
+            font-size: 18px;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .lista-datos {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .fila-dato {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .fila-dato:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .etiqueta {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .valor {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Tarjeta para estudiantes asociados */
+        .tarjeta-estudiante {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .tarjeta-estudiante h3 {
+            color: #1e3a8a;
+            font-size: 16px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL SUPERIOR -->
+    <header class="barra-superior">
+        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <div class="titulo-rol">Tutor</div>
+        <div style="width: 75px;"></div>
+    </header>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MENÚ LATERAL (MENÚ) -->
+    <aside class="menu-lateral" id="menuLateral">
+        <div>
+            <div class="menu-encabezado">
+                <span>Colegio "San Pedro"</span>
+                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+            </div>
+            
+            <nav class="lista-opciones">
+                <!-- Opciones generales del tutor -->
+                <a href="perfil_tutor.html" class="opcion-menu activa">Perfil</a>
+                <a href="password_tutor.html" class="opcion-menu">Cambiar Contraseña</a>
+
+                <div class="seccion-titulo">Estudiantes Asociados</div>
+
+                <!-- Botón Desplegable: Perfil -->
+                <div class="menu-desplegable-item">
+                    <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
+                    <div class="sub-menu" id="sub-perfil">
+                        <a href="perfil_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                        <a href="perfil_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Notas -->
+                <div class="menu-desplegable-item">
+                    <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
+                    <div class="sub-menu" id="sub-notas">
+                        <a href="notas_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                        <a href="notas_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Horario -->
+                <div class="menu-desplegable-item">
+                    <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
+                    <div class="sub-menu" id="sub-horario">
+                        <a href="horario_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                        <a href="horario_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Matrícula -->
+                <div class="menu-desplegable-item">
+                    <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
+                    <div class="sub-menu" id="sub-matricula">
+                        <a href="matricula_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                        <a href="matricula_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Asistencia -->
+                <div class="menu-desplegable-item">
+                    <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
+                    <div class="sub-menu" id="sub-asistencia">
+                        <a href="asistencia_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                        <a href="asistencia_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL: DATOS DEL TUTOR Y ESTUDIANTES -->
+    <main class="contenedor-contenido">
+        <section class="panel-datos">
+            <h2>Datos Personales del Tutor</h2>
+            
+            <div class="lista-datos">
+                <div class="fila-dato">
+                    <span class="etiqueta">CI:</span>
+                    <span class="valor" id="tutor-ci">5492018 CB</span>
+                </div>
+
+                <div class="fila-dato">
+                    <span class="etiqueta">Nombre:</span>
+                    <span class="valor" id="tutor-nombre">Roberto Carlos</span>
+                </div>
+
+                <div class="fila-dato">
+                    <span class="etiqueta">Apellido:</span>
+                    <span class="valor" id="tutor-apellido">Vargas Mendoza</span>
+                </div>
+
+                <div class="fila-dato">
+                    <span class="etiqueta">Teléfono:</span>
+                    <span class="valor" id="tutor-telefono">79321456</span>
+                </div>
+
+                <div class="fila-dato">
+                    <span class="etiqueta">Dirección:</span>
+                    <span class="valor" id="tutor-direccion">Av. América Este #452, Zona Queru Queru</span>
+                </div>
+            </div>
+
+            <h3 class="subtitulo-seccion">Estudiantes Asociados</h3>
+
+            <!-- Estudiante 1 -->
+            <div class="tarjeta-estudiante">
+                <h3>Estudiante 1</h3>
+                <div class="lista-datos">
+                    <div class="fila-dato">
+                        <span class="etiqueta">Nombre:</span>
+                        <span class="valor">Mateo Alejandro</span>
+                    </div>
+                    <div class="fila-dato">
+                        <span class="etiqueta">Apellido:</span>
+                        <span class="valor">Vargas Quispe</span>
+                    </div>
+                    <div class="fila-dato">
+                        <span class="etiqueta">Parentesco:</span>
+                        <span class="valor">Padre</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estudiante 2 -->
+            <div class="tarjeta-estudiante">
+                <h3>Estudiante 2</h3>
+                <div class="lista-datos">
+                    <div class="fila-dato">
+                        <span class="etiqueta">Nombre:</span>
+                        <span class="valor">Lucía Fernanda</span>
+                    </div>
+                    <div class="fila-dato">
+                        <span class="etiqueta">Apellido:</span>
+                        <span class="valor">Vargas Quispe</span>
+                    </div>
+                    <div class="fila-dato">
+                        <span class="etiqueta">Parentesco:</span>
+                        <span class="valor">Padre</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // Control del menú lateral
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+        const menuLateral = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+
+        function abrirMenu() {
+            menuLateral.classList.add('abierto');
+            overlay.classList.add('activo');
+        }
+
+        function cerrarMenu() {
+            menuLateral.classList.remove('abierto');
+            overlay.classList.remove('activo');
+        }
+
+        btnAbrirMenu.addEventListener('click', abrirMenu);
+        btnCerrarMenu.addEventListener('click', cerrarMenu);
+        overlay.addEventListener('click', cerrarMenu);
+
+        // Función para desplegar los submenús de los estudiantes
+        function toggleSubMenu(idSubMenu) {
+            const submenu = document.getElementById(idSubMenu);
+            const boton = submenu.previousElementSibling;
+            
+            // Alternar estado abierto/cerrado
+            submenu.classList.toggle('abierto');
+            boton.classList.toggle('activo');
+        }
+    </script>
+
+</body>
+</html>

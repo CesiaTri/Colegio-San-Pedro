@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen Contaduría - Colegio "San Pedro"</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+        .barra-superior {
+            background-color: #1e3a8a;
+            color: white;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn-menu {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-menu:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .titulo-rol {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- MENÚ LATERAL DESPLEGABLE --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 150;
+        }
+
+        .overlay.activo {
+            display: block;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: left 0.3s ease;
+            z-index: 200;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+
+        .menu-lateral.abierto {
+            left: 0;
+        }
+
+        .menu-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .menu-encabezado span {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .btn-cerrar-menu {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .lista-opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .opcion-menu {
+            display: block;
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .opcion-menu:hover,
+        .opcion-menu.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .menu-desplegable-item {
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .btn-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-desplegable::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        /* Submenús */
+        .sub-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 14px;
+            margin: 4px 0 8px 0;
+            border-left: 2px solid #cbd5e1;
+        }
+
+        .sub-menu.abierto {
+            display: flex;
+        }
+
+        .sub-opcion {
+            text-decoration: none;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sub-opcion:hover,
+        .sub-opcion.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .sub-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-desplegable::after {
+            content: '▼';
+            font-size: 9px;
+            transition: transform 0.2s;
+        }
+
+        .sub-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        .sub-menu-anidado {
+            padding-left: 12px;
+            margin: 2px 0 6px 0;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        /* Botón Cerrar Sesión al final */
+        .btn-cerrar-sesion {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-cerrar-sesion:hover {
+            background-color: #fecaca;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .contenedor-contenido {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 35px 25px;
+            gap: 25px;
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .titulo-pagina {
+            color: #1e3a8a;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .titulo-seccion {
+            color: #1e3a8a;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+            margin-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        /* --- CUADRÍCULA DE LOS 6 PANELES --- */
+        .grid-seis-paneles {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+
+        .panel-resumen {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 22px 24px;
+            border-top: 5px solid #1e3a8a;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .panel-resumen.span-dos {
+            grid-column: span 2;
+        }
+
+        /* Variantes de color: Verde agua para ingresos actuales */
+        .panel-resumen.panel-ingreso-actual {
+            border-top-color: #0d9488;
+            background-color: #f0fdfa;
+        }
+
+        .panel-resumen.panel-ingreso-actual .panel-titulo {
+            color: #0f766e;
+        }
+
+        /* Variantes de color: Rojo suave para deudas */
+        .panel-resumen.panel-deuda {
+            border-top-color: #e11d48;
+            background-color: #fff1f2;
+        }
+
+        .panel-resumen.panel-deuda .panel-titulo {
+            color: #be123c;
+        }
+
+        .panel-titulo {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .panel-numero {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .panel-numero.ingreso {
+            color: #15803d;
+        }
+
+        .panel-numero.ingreso-actual {
+            color: #0d9488;
+        }
+
+        .panel-numero.salida {
+            color: #b91c1c;
+        }
+
+        .panel-numero.deuda {
+            color: #e11d48;
+        }
+
+        /* --- PANELES MENSUALES (FEBRERO A NOVIEMBRE) --- */
+        .grid-meses {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+            width: 100%;
+        }
+
+        .panel-mes {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 22px 24px;
+            border-top: 5px solid #1e3a8a;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .titulo-mes {
+            color: #1e3a8a;
+            font-size: 20px;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sub-paneles-mes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .sub-panel-mes {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sub-panel-mes.sub-ingreso-actual {
+            background-color: #f0fdfa;
+            border-color: #99f6e4;
+        }
+
+        .sub-panel-mes.sub-ingreso-actual .panel-titulo {
+            color: #0f766e;
+        }
+
+        .sub-panel-mes.sub-deuda {
+            background-color: #fff1f2;
+            border-color: #fecdd3;
+        }
+
+        .sub-panel-mes.sub-deuda .panel-titulo {
+            color: #be123c;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-seis-paneles {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-seis-paneles,
+            .grid-meses,
+            .sub-paneles-mes {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-resumen.span-dos {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL SUPERIOR -->
+    <header class="barra-superior">
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <div class="titulo-rol">Administrativo</div>
+        <div style="width: 75px;"></div>
+    </header>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MENÚ LATERAL -->
+    <aside class="menu-lateral" id="menuLateral">
+        <div>
+            <div class="menu-encabezado">
+                <span>Colegio "San Pedro"</span>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+            </div>
+
+            <nav class="lista-opciones">
+                <a href="perfil_administrativo.html" class="opcion-menu">Perfil</a>
+                <a href="password_administrativo.html" class="opcion-menu">Cambiar Contraseña</a>
+
+                <!-- Botón Desplegable: Registro -->
+                <div class="menu-desplegable-item">
+                    <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-registro')">Registro</button>
+                    <div class="sub-menu" id="sub-registro">
+                        <a href="estudiante_registro_administrativo.html" class="sub-opcion">Estudiante</a>
+                        <a href="tutor_registro_administrativo.html" class="sub-opcion">Tutor</a>
+                        <a href="profesor_registro_administrativo.html" class="sub-opcion">Profesor</a>
+                        <a href="matricula_registro_administrativo.html" class="sub-opcion">Matricula</a>
+                        <a href="pagos_registro_administrativo.html" class="sub-opcion">Pagos</a>
+                        <a href="horarios_registro_administrativo.html" class="sub-opcion">Horarios</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Reportes -->
+                <div class="menu-desplegable-item">
+                    <button type="button" class="opcion-menu btn-desplegable activo" onclick="toggleSubMenu('sub-reportes')">Reportes</button>
+                    <div class="sub-menu abierto" id="sub-reportes">
+                        <a href="general_reportes_administrativo.html" class="sub-opcion">General</a>
+                        <a href="profesores_reportes_administrativo.html" class="sub-opcion">Profesores</a>
+                        <a href="cursos_reportes_administrativo.html" class="sub-opcion">Cursos</a>
+
+                        <!-- Sub-botón Desplegable: Contaduría -->
+                        <div class="menu-desplegable-item">
+                            <button type="button" class="sub-opcion sub-desplegable activo" onclick="toggleSubMenu('sub-contaduria')">Contaduría</button>
+                            <div class="sub-menu abierto sub-menu-anidado" id="sub-contaduria">
+                                <a href="resumen_contaduria_reportes_administrativo.html" class="sub-opcion activa">Resumen</a>
+                                <a href="matriculas_sin_pagar_contaduria_reportes_administrativo.html" class="sub-opcion">Matriculas sin pagar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- BOTÓN ROJO SUAVE DE CERRAR SESIÓN -->
+        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="contenedor-contenido">
+        <h1 class="titulo-pagina">Resumen Contaduria</h1>
+
+        <!-- 6 PANELES PRINCIPALES -->
+        <section class="grid-seis-paneles">
+            <!-- Panel 1 -->
+            <div class="panel-resumen">
+                <span class="panel-titulo">Ingresos anual previsto</span>
+                <span class="panel-numero ingreso" id="ingreso-anual-previsto">Bs. 480,000.00</span>
+            </div>
+
+            <!-- Panel 2 (Verde agua) -->
+            <div class="panel-resumen panel-ingreso-actual">
+                <span class="panel-titulo">Ingreso anual actual</span>
+                <span class="panel-numero ingreso-actual" id="ingreso-anual-actual">Bs. 392,500.00</span>
+            </div>
+
+            <!-- Panel 3 -->
+            <div class="panel-resumen">
+                <span class="panel-titulo">Salidas anuales</span>
+                <span class="panel-numero salida" id="salidas-anuales">Bs. 265,800.00</span>
+            </div>
+
+            <!-- Panel 4 (Rojo suave) -->
+            <div class="panel-resumen panel-deuda">
+                <span class="panel-titulo">Matriculas adeudadas</span>
+                <span class="panel-numero deuda" id="matriculas-adeudadas-total">Bs. 87,500.00</span>
+            </div>
+
+            <!-- Panel 5 -->
+            <div class="panel-resumen span-dos">
+                <span class="panel-titulo">Ingresos previstos por mes</span>
+                <span class="panel-numero ingreso" id="ingresos-previstos-mes">Bs. 48,000.00</span>
+            </div>
+
+            <!-- Panel 6 -->
+            <div class="panel-resumen span-dos">
+                <span class="panel-titulo">Salidas previstas por mes</span>
+                <span class="panel-numero salida" id="salidas-previstas-mes">Bs. 26,580.00</span>
+            </div>
+        </section>
+
+        <!-- TÍTULO SEPARADOR -->
+        <h2 class="titulo-seccion">Resumen Mensual</h2>
+
+        <!-- PANELES MENSUALES: FEBRERO A NOVIEMBRE -->
+        <section class="grid-meses" id="contenedor-meses">
+            <!-- Generados dinámicamente de Febrero a Noviembre -->
+        </section>
+    </main>
+
+    <script>
+        /* --- CONTROL DEL MENÚ LATERAL --- */
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+        const menuLateral = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+
+        function abrirMenu() {
+            menuLateral.classList.add('abierto');
+            overlay.classList.add('activo');
+        }
+
+        function cerrarMenu() {
+            menuLateral.classList.remove('abierto');
+            overlay.classList.remove('activo');
+        }
+
+        btnAbrirMenu.addEventListener('click', abrirMenu);
+        btnCerrarMenu.addEventListener('click', cerrarMenu);
+        overlay.addEventListener('click', cerrarMenu);
+
+        function toggleSubMenu(idSubMenu) {
+            const submenu = document.getElementById(idSubMenu);
+            const boton = submenu.previousElementSibling;
+
+            submenu.classList.toggle('abierto');
+            boton.classList.toggle('activo');
+        }
+
+        /* --- DATOS MENSUALES (FEBRERO A NOVIEMBRE) --- */
+        const resumenMensual = [
+            { mes: "Febrero", ingresosActual: "Bs. 45,200.00", matriculasAdeudadas: "Bs. 2,800.00" },
+            { mes: "Marzo", ingresosActual: "Bs. 43,800.00", matriculasAdeudadas: "Bs. 4,200.00" },
+            { mes: "Abril", ingresosActual: "Bs. 42,500.00", matriculasAdeudadas: "Bs. 5,500.00" },
+            { mes: "Mayo", ingresosActual: "Bs. 41,000.00", matriculasAdeudadas: "Bs. 7,000.00" },
+            { mes: "Junio", ingresosActual: "Bs. 39,600.00", matriculasAdeudadas: "Bs. 8,400.00" },
+            { mes: "Julio", ingresosActual: "Bs. 38,900.00", matriculasAdeudadas: "Bs. 9,100.00" },
+            { mes: "Agosto", ingresosActual: "Bs. 37,500.00", matriculasAdeudadas: "Bs. 10,500.00" },
+            { mes: "Septiembre", ingresosActual: "Bs. 36,800.00", matriculasAdeudadas: "Bs. 11,200.00" },
+            { mes: "Octubre", ingresosActual: "Bs. 35,200.00", matriculasAdeudadas: "Bs. 12,800.00" },
+            { mes: "Noviembre", ingresosActual: "Bs. 34,000.00", matriculasAdeudadas: "Bs. 14,000.00" }
+        ];
+
+        const contenedorMeses = document.getElementById('contenedor-meses');
+
+        function renderizarMeses() {
+            contenedorMeses.innerHTML = '';
+
+            resumenMensual.forEach(item => {
+                const tarjetaMes = document.createElement('div');
+                tarjetaMes.className = 'panel-mes';
+                tarjetaMes.innerHTML = `
+                    <h3 class="titulo-mes">${item.mes}</h3>
+                    <div class="sub-paneles-mes">
+                        <div class="sub-panel-mes sub-ingreso-actual">
+                            <span class="panel-titulo">Ingresos actual</span>
+                            <span class="panel-numero ingreso-actual">${item.ingresosActual}</span>
+                        </div>
+                        <div class="sub-panel-mes sub-deuda">
+                            <span class="panel-titulo">Matriculas adeudadas</span>
+                            <span class="panel-numero deuda">${item.matriculasAdeudadas}</span>
+                        </div>
+                    </div>
+                `;
+                contenedorMeses.appendChild(tarjetaMes);
+            });
+        }
+
+        renderizarMeses();
+    </script>
+
+</body>
+</html>

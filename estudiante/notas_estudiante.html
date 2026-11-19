@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notas del Alumno - Colegio "San Pedro"</title>
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        color: #334155;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+    .barra-superior {
+        background-color: #1e3a8a;
+        color: white;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 100;
+    }
+
+    .btn-menu {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-menu:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .titulo-rol {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* --- MENÚ LATERAL DESPLEGABLE --- */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 150;
+    }
+
+    .overlay.activo {
+        display: block;
+    }
+
+    .menu-lateral {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 270px;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: left 0.3s ease;
+        z-index: 200;
+        padding: 20px 15px;
+    }
+
+    .menu-lateral.abierto {
+        left: 0;
+    }
+
+    .menu-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .menu-encabezado span {
+        font-weight: 700;
+        color: #1e3a8a;
+        font-size: 16px;
+    }
+
+    .btn-cerrar-menu {
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #64748b;
+        cursor: pointer;
+    }
+
+    .lista-opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .opcion-menu {
+        display: block;
+        text-decoration: none;
+        color: #334155;
+        padding: 12px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+
+    .opcion-menu:hover, .opcion-menu.activa {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    /* Botón Cerrar Sesión al final */
+    .btn-cerrar-sesion {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: background-color 0.2s;
+    }
+
+    .btn-cerrar-sesion:hover {
+        background-color: #fecaca;
+    }
+
+    /* --- CONTENIDO PRINCIPAL: NOTAS --- */
+    .notas-container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #1e3a8a;
+      width: 90%;
+    }
+
+    .notas-container h1 {
+      margin-bottom: 20px;
+      color: #1e3a8a;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    /* Información del Alumno */
+    .info-linea {
+      text-align: center;
+      font-size: 15px;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .info-bloque {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Tabla / Cuadrícula de Notas */
+    .tabla-notas {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .tabla-notas th, .tabla-notas td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .tabla-notas th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: bold;
+    }
+
+    .tabla-notas td:first-child {
+      text-align: left;
+    }
+
+    .tabla-notas tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Estilo para pintar TODA la fila de rojo bajito si la nota final es reprobada (< 51) */
+    tr.fila-reprobada {
+      background-color: #fee2e2 !important;
+      color: #991b1b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANEL SUPERIOR -->
+  <header class="barra-superior">
+      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <div class="titulo-rol">Estudiante</div>
+      <div style="width: 75px;"></div>
+  </header>
+
+  <!-- FONDO OSCURO AL ABRIR MENÚ -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MENÚ LATERAL (SIDEBAR) -->
+  <aside class="menu-lateral" id="menuLateral">
+      <div>
+          <div class="menu-encabezado">
+              <span>Colegio "San Pedro"</span>
+              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+          </div>
+          <nav class="lista-opciones">
+              <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
+              <a href="notas_estudiante.html" class="opcion-menu activa">Notas</a>
+              <a href="horario_estudiante.html" class="opcion-menu">Horario</a>
+              <a href="matricula_estudiante.html" class="opcion-menu">Matrícula</a>
+              <a href="asistencia_estudiante.html" class="opcion-menu">Asistencia</a>
+              <a href="password_estudiante.html" class="opcion-menu">Cambiar contraseña</a>
+          </nav>
+      </div>
+
+      <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+  </aside>
+
+  <!-- Contenido de Notas -->
+  <main class="notas-container">
+    <h1>Registro de Calificaciones</h1>
+    
+    <!-- Datos del Alumno de Ejemplo -->
+    <div class="info-bloque">
+      <div class="info-linea"><strong>Estudiante:</strong> Mateo Alejandro Vargas Quispe</div>
+      <div class="info-linea"><strong>Curso:</strong> 3° "A" de Secundaria | <strong>Turno:</strong> Mañana</div>
+    </div>
+
+    <!-- Cuadrícula / Tabla de Calificaciones -->
+    <table class="tabla-notas">
+      <thead>
+        <tr>
+          <th>Materia</th>
+          <th>1er Trim.</th>
+          <th>2do Trim.</th>
+          <th>3er Trim.</th>
+          <th>Nota Final</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-tabla-notas">
+        <!-- Los datos se inyectarán aquí -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+      // Control del menú lateral
+      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+      const menuLateral = document.getElementById('menuLateral');
+      const overlay = document.getElementById('overlay');
+
+      function abrirMenu() {
+          menuLateral.classList.add('abierto');
+          overlay.classList.add('activo');
+      }
+
+      function cerrarMenu() {
+          menuLateral.classList.remove('abierto');
+          overlay.classList.remove('activo');
+      }
+
+      btnAbrirMenu.addEventListener('click', abrirMenu);
+      btnCerrarMenu.addEventListener('click', cerrarMenu);
+      overlay.addEventListener('click', cerrarMenu);
+
+      // Datos de ejemplo con materias y notas (incluyendo una reprobada para probar el rojo)
+      const listaNotas = [
+          { materia: "Matemáticas", n1: 45, n2: 48, n3: 50 }, // Nota final baja (<51) -> se pintará de rojo
+          { materia: "Lenguaje y Literatura", n1: 82, n2: 85, n3: 88 },
+          { materia: "Física", n1: 60, n2: 58, n3: 65 },
+          { materia: "Química", n1: 75, n2: 70, n3: 72 },
+          { materia: "Biología", n1: 90, n2: 88, n3: 92 },
+          { materia: "Ciencias Sociales", n1: 78, n2: 80, n3: 82 },
+          { materia: "Educación Física", n1: 95, n2: 95, n3: 98 },
+          { materia: "Artes Plásticas", n1: 88, n2: 85, n3: 90 }
+      ];
+
+      const tbody = document.getElementById('cuerpo-tabla-notas');
+
+      listaNotas.forEach(item => {
+          // Calcula el promedio / nota final de los 3 trimestres
+          const notaFinal = Math.round((item.n1 + item.n2 + item.n3) / 3);
+
+          const tr = document.createElement('tr');
+
+          // Si la nota final es menor a 51, agregamos la clase para pintarla de rojo suave
+          if (notaFinal < 51) {
+              tr.classList.add('fila-reprobada');
+          }
+
+          tr.innerHTML = `
+              <td>${item.materia}</td>
+              <td>${item.n1}</td>
+              <td>${item.n2}</td>
+              <td>${item.n3}</td>
+              <td><strong>${notaFinal}</strong></td>
+          `;
+
+          tbody.appendChild(tr);
+      });
+  </script>
+
+</body>
+</html>

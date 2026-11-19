@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horario del Estudiante - Colegio "San Pedro"</title>
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        color: #334155;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+    .barra-superior {
+        background-color: #1e3a8a;
+        color: white;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 100;
+    }
+
+    .btn-menu {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-menu:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .titulo-rol {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* --- MENÚ LATERAL DESPLEGABLE --- */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 150;
+    }
+
+    .overlay.activo {
+        display: block;
+    }
+
+    .menu-lateral {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 270px;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: left 0.3s ease;
+        z-index: 200;
+        padding: 20px 15px;
+    }
+
+    .menu-lateral.abierto {
+        left: 0;
+    }
+
+    .menu-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .menu-encabezado span {
+        font-weight: 700;
+        color: #1e3a8a;
+        font-size: 16px;
+    }
+
+    .btn-cerrar-menu {
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #64748b;
+        cursor: pointer;
+    }
+
+    .lista-opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .opcion-menu {
+        display: block;
+        text-decoration: none;
+        color: #334155;
+        padding: 12px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+
+    .opcion-menu:hover, .opcion-menu.activa {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    /* Botón Cerrar Sesión al final */
+    .btn-cerrar-sesion {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: background-color 0.2s;
+    }
+
+    .btn-cerrar-sesion:hover {
+        background-color: #fecaca;
+    }
+
+    /* --- CONTENIDO PRINCIPAL: HORARIO --- */
+    .horario-container {
+      max-width: 950px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #1e3a8a;
+      width: 92%;
+    }
+
+    .horario-container h1 {
+      color: #1e3a8a;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Tabla / Cuadrícula de Horario */
+    .tabla-horario {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tabla-horario th, .tabla-horario td {
+      border: 1px solid #cbd5e1;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .tabla-horario th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .tabla-horario td.hora {
+      font-weight: bold;
+      background-color: #f8fafc;
+      color: #334155;
+      width: 140px;
+    }
+
+    /* Estilo para la fila de Recreo en Verde Agua Suave */
+    .fila-recreo {
+      background-color: #ccfbf1 !important; /* Verde agua suave */
+      font-weight: bold;
+      color: #115e59; /* Texto en tono verde oscuro legible */
+      letter-spacing: 1.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANEL SUPERIOR -->
+  <header class="barra-superior">
+      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <div class="titulo-rol">Estudiante</div>
+      <div style="width: 75px;"></div>
+  </header>
+
+  <!-- FONDO OSCURO AL ABRIR MENÚ -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MENÚ LATERAL (SIDEBAR) -->
+  <aside class="menu-lateral" id="menuLateral">
+      <div>
+          <div class="menu-encabezado">
+              <span>Colegio "San Pedro"</span>
+              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+          </div>
+          <nav class="lista-opciones">
+              <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
+              <a href="notas_estudiante.html" class="opcion-menu">Notas</a>
+              <a href="horario_estudiante.html" class="opcion-menu activa">Horario</a>
+              <a href="matricula_estudiante.html" class="opcion-menu">Matrícula</a>
+              <a href="asistencia_estudiante.html" class="opcion-menu">Asistencia</a>
+              <a href="password_estudiante.html" class="opcion-menu">Cambiar contraseña</a>
+          </nav>
+      </div>
+
+      <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+  </aside>
+
+  <!-- Contenido de Horario -->
+  <main class="horario-container">
+    <h1>Horario</h1>
+
+    <table class="tabla-horario">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miércoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-tabla-horario">
+        <!-- Generado dinámicamente -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+      // Control del menú lateral
+      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+      const menuLateral = document.getElementById('menuLateral');
+      const overlay = document.getElementById('overlay');
+
+      function abrirMenu() {
+          menuLateral.classList.add('abierto');
+          overlay.classList.add('activo');
+      }
+
+      function cerrarMenu() {
+          menuLateral.classList.remove('abierto');
+          overlay.classList.remove('activo');
+      }
+
+      btnAbrirMenu.addEventListener('click', abrirMenu);
+      btnCerrarMenu.addEventListener('click', cerrarMenu);
+      overlay.addEventListener('click', cerrarMenu);
+
+      // --- CONFIGURACIÓN DE TURNOS Y DATOS DE PRUEBA ---
+      const turnoEstudiante = "tarde"; 
+
+      let bloquesHorarios = [];
+
+      if (turnoEstudiante === "mañana") {
+          bloquesHorarios = [
+              { hora: "8:00 a 9:00", tipo: "clase", materias: ["Matemáticas", "Lenguaje", "Física", "Química", "Biología"] },
+              { hora: "9:00 a 10:00", tipo: "clase", materias: ["Sociales", "Matemáticas", "Inglés", "Lenguaje", "Física"] },
+              { hora: "10:00 a 10:15", tipo: "recreo", texto: "RECREO" },
+              { hora: "10:15 a 11:15", tipo: "clase", materias: ["Artes Plásticas", "Biología", "Sociales", "Música", "Matemáticas"] },
+              { hora: "11:15 a 12:15", tipo: "clase", materias: ["Educación Física", "Química", "Informática", "Religión", "Inglés"] }
+          ];
+      } else {
+          bloquesHorarios = [
+              { hora: "1:30 a 2:30", tipo: "clase", materias: ["Matemáticas", "Lenguaje", "Física", "Química", "Biología"] },
+              { hora: "2:30 a 3:30", tipo: "clase", materias: ["Sociales", "Matemáticas", "Inglés", "Lenguaje", "Física"] },
+              { hora: "3:30 a 3:45", tipo: "recreo", texto: "RECREO" },
+              { hora: "3:45 a 4:45", tipo: "clase", materias: ["Artes Plásticas", "Biología", "Sociales", "Música", "Matemáticas"] },
+              { hora: "4:45 a 5:45", tipo: "clase", materias: ["Educación Física", "Química", "Informática", "Religión", "Inglés"] }
+          ];
+      }
+
+      const tbodyHorario = document.getElementById('cuerpo-tabla-horario');
+
+      bloquesHorarios.forEach(bloque => {
+          const tr = document.createElement('tr');
+
+          if (bloque.tipo === "recreo") {
+              tr.className = "fila-recreo";
+              tr.innerHTML = `
+                  <td class="hora">${bloque.hora}</td>
+                  <td colspan="5">${bloque.texto}</td>
+              `;
+          } else {
+              tr.innerHTML = `
+                  <td class="hora">${bloque.hora}</td>
+                  <td>${bloque.materias[0]}</td>
+                  <td>${bloque.materias[1]}</td>
+                  <td>${bloque.materias[2]}</td>
+                  <td>${bloque.materias[3]}</td>
+                  <td>${bloque.materias[4]}</td>
+              `;
+          }
+
+          tbodyHorario.appendChild(tr);
+      });
+  </script>
+
+  <script src="horarioEstudiante.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
+</body>
+</html>

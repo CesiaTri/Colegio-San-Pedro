@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso - Materias - Colegio "San Pedro"</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+        .barra-superior {
+            background-color: #1e3a8a;
+            color: white;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn-menu {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-menu:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .titulo-rol {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- MENÚ LATERAL DESPLEGABLE --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 150;
+        }
+
+        .overlay.activo {
+            display: block;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: left 0.3s ease;
+            z-index: 200;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+
+        .menu-lateral.abierto {
+            left: 0;
+        }
+
+        .menu-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .menu-encabezado span {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .btn-cerrar-menu {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .lista-opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .opcion-menu {
+            display: block;
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .opcion-menu:hover,
+        .opcion-menu.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .menu-desplegable-item {
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .btn-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-desplegable::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        /* Submenús */
+        .sub-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 14px;
+            margin: 4px 0 8px 0;
+            border-left: 2px solid #cbd5e1;
+        }
+
+        .sub-menu.abierto {
+            display: flex;
+        }
+
+        .sub-opcion {
+            text-decoration: none;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sub-opcion:hover,
+        .sub-opcion.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .sub-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-desplegable::after {
+            content: '▼';
+            font-size: 9px;
+            transition: transform 0.2s;
+        }
+
+        .sub-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        .sub-menu-anidado {
+            padding-left: 12px;
+            margin: 2px 0 6px 0;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        /* Botón Cerrar Sesión al final */
+        .btn-cerrar-sesion {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-cerrar-sesion:hover {
+            background-color: #fecaca;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .contenedor-contenido {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 35px 25px;
+            gap: 25px;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .titulo-pagina {
+            color: #1e3a8a;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        /* --- DATOS DEL CURSO --- */
+        .panel-curso {
+            background-color: #ffffff;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 22px 28px;
+            border-top: 5px solid #1e3a8a;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .dato-curso {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .etiqueta-curso {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .valor-curso {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* --- LISTA TIPO MATRÍCULA / CUADRÍCULA --- */
+        .panel-tabla {
+            background-color: #ffffff;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        .tabla-materias {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 650px;
+        }
+
+        .tabla-materias thead {
+            background-color: #1e3a8a;
+            color: #ffffff;
+        }
+
+        .tabla-materias th {
+            padding: 14px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #1e40af;
+        }
+
+        .tabla-materias td {
+            padding: 13px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tabla-materias tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .tabla-materias tbody tr:hover {
+            background-color: #eff6ff;
+        }
+
+        .celda-accion {
+            text-align: center;
+        }
+
+        .btn-ver {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 7px 18px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background-color 0.2s;
+        }
+
+        .btn-ver:hover {
+            background-color: #1d4ed8;
+        }
+
+        @media (max-width: 768px) {
+            .panel-curso {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL SUPERIOR -->
+    <header class="barra-superior">
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <div class="titulo-rol">Administrativo</div>
+        <div style="width: 75px;"></div>
+    </header>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MENÚ LATERAL -->
+    <aside class="menu-lateral" id="menuLateral">
+        <div>
+            <div class="menu-encabezado">
+                <span>Colegio "San Pedro"</span>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+            </div>
+
+            <nav class="lista-opciones">
+                <a href="perfil_administrativo.html" class="opcion-menu">Perfil</a>
+                <a href="password_administrativo.html" class="opcion-menu">Cambiar Contraseña</a>
+
+                <!-- Botón Desplegable: Registro -->
+                <div class="menu-desplegable-item">
+                    <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-registro')">Registro</button>
+                    <div class="sub-menu" id="sub-registro">
+                        <a href="estudiante_registro_administrativo.html" class="sub-opcion">Estudiante</a>
+                        <a href="tutor_registro_administrativo.html" class="sub-opcion">Tutor</a>
+                        <a href="profesor_registro_administrativo.html" class="sub-opcion">Profesor</a>
+                        <a href="matricula_registro_administrativo.html" class="sub-opcion">Matricula</a>
+                        <a href="pagos_registro_administrativo.html" class="sub-opcion">Pagos</a>
+                        <a href="horarios_registro_administrativo.html" class="sub-opcion">Horarios</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Reportes -->
+                <div class="menu-desplegable-item">
+                    <button type="button" class="opcion-menu btn-desplegable activo" onclick="toggleSubMenu('sub-reportes')">Reportes</button>
+                    <div class="sub-menu abierto" id="sub-reportes">
+                        <a href="general_reportes_administrativo.html" class="sub-opcion">General</a>
+                        <a href="profesores_reportes_administrativo.html" class="sub-opcion">Profesores</a>
+                        <a href="cursos_reportes_administrativo.html" class="sub-opcion activa">Cursos</a>
+
+                        <!-- Sub-botón Desplegable: Contaduría -->
+                        <div class="menu-desplegable-item">
+                            <button type="button" class="sub-opcion sub-desplegable" onclick="toggleSubMenu('sub-contaduria')">Contaduría</button>
+                            <div class="sub-menu sub-menu-anidado" id="sub-contaduria">
+                                <a href="resumen_contaduria_reportes_administrativo.html" class="sub-opcion">Resumen</a>
+                                <a href="matriculas_sin_pagar_contaduria_reportes_administrativo.html" class="sub-opcion">Matriculas sin pagar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- BOTÓN ROJO SUAVE DE CERRAR SESIÓN -->
+        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="contenedor-contenido">
+        <h1 class="titulo-pagina">Curso - Materias</h1>
+
+        <!-- DATOS DEL CURSO -->
+        <section class="panel-curso">
+            <div class="dato-curso">
+                <span class="etiqueta-curso">Curso</span>
+                <span class="valor-curso" id="curso-nombre">6to</span>
+            </div>
+
+            <div class="dato-curso">
+                <span class="etiqueta-curso">Paralelo</span>
+                <span class="valor-curso" id="curso-paralelo">A</span>
+            </div>
+
+            <div class="dato-curso">
+                <span class="etiqueta-curso">Grado</span>
+                <span class="valor-curso" id="curso-grado">Secundaria</span>
+            </div>
+
+            <div class="dato-curso">
+                <span class="etiqueta-curso">Turno</span>
+                <span class="valor-curso" id="curso-turno">Mañana</span>
+            </div>
+        </section>
+
+        <!-- LISTA TIPO MATRÍCULA DE MATERIAS -->
+        <section class="panel-tabla">
+            <table class="tabla-materias">
+                <thead>
+                    <tr>
+                        <th>Materia</th>
+                        <th>Profesor</th>
+                        <th style="text-align: center;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla">
+                    <!-- Filas generadas dinámicamente -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        /* --- CONTROL DEL MENÚ LATERAL --- */
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+        const menuLateral = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+
+        function abrirMenu() {
+            menuLateral.classList.add('abierto');
+            overlay.classList.add('activo');
+        }
+
+        function cerrarMenu() {
+            menuLateral.classList.remove('abierto');
+            overlay.classList.remove('activo');
+        }
+
+        btnAbrirMenu.addEventListener('click', abrirMenu);
+        btnCerrarMenu.addEventListener('click', cerrarMenu);
+        overlay.addEventListener('click', cerrarMenu);
+
+        function toggleSubMenu(idSubMenu) {
+            const submenu = document.getElementById(idSubMenu);
+            const boton = submenu.previousElementSibling;
+
+            submenu.classList.toggle('abierto');
+            boton.classList.toggle('activo');
+        }
+
+        /* --- DATOS DE EJEMPLO SEGÚN ?id= EN LA URL --- */
+        const cursosInfo = {
+            "CUR-01": { curso: "1ro", paralelo: "A", grado: "Primaria", turno: "Mañana" },
+            "CUR-02": { curso: "3ro", paralelo: "B", grado: "Primaria", turno: "Mañana" },
+            "CUR-03": { curso: "4to", paralelo: "C", grado: "Primaria", turno: "Tarde" },
+            "CUR-04": { curso: "1ro", paralelo: "A", grado: "Secundaria", turno: "Tarde" },
+            "CUR-05": { curso: "2do", paralelo: "B", grado: "Secundaria", turno: "Mañana" },
+            "CUR-06": { curso: "5to", paralelo: "A", grado: "Secundaria", turno: "Tarde" },
+            "CUR-07": { curso: "6to", paralelo: "A", grado: "Secundaria", turno: "Mañana" }
+        };
+
+        const materiasPorCurso = [
+            { materia: "Matemáticas", profesor: "Carlos Alberto Mendoza Vargas" },
+            { materia: "Lenguaje", profesor: "María Elena Quispe Torrico" },
+            { materia: "Física", profesor: "Jorge Luis Rojas Fernández" },
+            { materia: "Ciencias Naturales", profesor: "Ana Sofía Guzmán Salazar" },
+            { materia: "Historia", profesor: "Roberto Carlos Paredes Siles" },
+            { materia: "Inglés", profesor: "Lucía Fernanda Castro Montaño" }
+        ];
+
+        const params = new URLSearchParams(window.location.search);
+        const cursoId = params.get('id') || "CUR-07";
+
+        if (cursosInfo[cursoId]) {
+            document.getElementById('curso-nombre').textContent = cursosInfo[cursoId].curso;
+            document.getElementById('curso-paralelo').textContent = cursosInfo[cursoId].paralelo;
+            document.getElementById('curso-grado').textContent = cursosInfo[cursoId].grado;
+            document.getElementById('curso-turno').textContent = cursosInfo[cursoId].turno;
+        }
+
+        const cuerpoTabla = document.getElementById('cuerpo-tabla');
+
+        function renderizarMaterias() {
+            cuerpoTabla.innerHTML = '';
+
+            materiasPorCurso.forEach(item => {
+                const urlVer = `ver_notas_reportes_administrativo.html?curso=${encodeURIComponent(cursoId)}&materia=${encodeURIComponent(item.materia)}`;
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${item.materia}</td>
+                    <td>${item.profesor}</td>
+                    <td class="celda-accion">
+                        <a href="${urlVer}" class="btn-ver">Ver</a>
+                    </td>
+                `;
+                cuerpoTabla.appendChild(fila);
+            });
+        }
+
+        renderizarMaterias();
+    </script>
+
+</body>
+</html>

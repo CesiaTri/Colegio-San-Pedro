@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notas Profesor - Colegio "San Pedro"</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+        .barra-superior {
+            background-color: #1e3a8a;
+            color: white;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn-menu {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-menu:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .titulo-rol {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- MENÚ LATERAL DESPLEGABLE --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 150;
+        }
+
+        .overlay.activo {
+            display: block;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: left 0.3s ease;
+            z-index: 200;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+
+        .menu-lateral.abierto {
+            left: 0;
+        }
+
+        .menu-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .menu-encabezado span {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .btn-cerrar-menu {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .lista-opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .opcion-menu {
+            display: block;
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .opcion-menu:hover, .opcion-menu.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        /* Estilos de Sección en el Menú */
+        .seccion-titulo {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin: 15px 0 5px 5px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Botón Cerrar Sesión al final */
+        .btn-cerrar-sesion {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-cerrar-sesion:hover {
+            background-color: #fecaca;
+        }
+
+        /* --- CONTENIDO PRINCIPAL: NOTAS --- */
+        .contenedor-contenido {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .panel-notas {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 35px 40px;
+            border-top: 5px solid #1e3a8a;
+        }
+
+        .panel-notas h2 {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .lista-clases {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tarjeta-clase {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.2s;
+        }
+
+        .tarjeta-clase:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-clase {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .materia-nombre {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .detalles-curso {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .etiqueta-info {
+            background-color: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #334155;
+        }
+
+        .acciones-clase {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-accion {
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-ver {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .btn-ver:hover {
+            background-color: #bae6fd;
+        }
+
+        .btn-registrar {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .btn-registrar:hover {
+            background-color: #a7f3d0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL SUPERIOR -->
+    <header class="barra-superior">
+        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <div class="titulo-rol">Profesor</div>
+        <div style="width: 75px;"></div>
+    </header>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MENÚ LATERAL (MENÚ DESPLEGABLE) -->
+    <aside class="menu-lateral" id="menuLateral">
+        <div>
+            <div class="menu-encabezado">
+                <span>Colegio "San Pedro"</span>
+                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+            </div>
+            
+            <nav class="lista-opciones">
+                <a href="perfil_profesor.html" class="opcion-menu">Perfil</a>
+                <a href="password_profesor.html" class="opcion-menu">Cambiar Contraseña</a>
+
+                <div class="seccion-titulo">Mis Clases</div>
+                <a href="horario_profesor.html" class="opcion-menu">Horario</a>
+                <a href="asistencias_profesor.html" class="opcion-menu">Asistencias</a>
+                <a href="notas_profesor.html" class="opcion-menu activa">Notas</a>
+                <a href="informacion_estudiantes_profesor.html" class="opcion-menu">Informacion Estudiantes</a>
+            </nav>
+        </div>
+
+        <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL: NOTAS -->
+    <main class="contenedor-contenido">
+        <section class="panel-notas">
+            <h2>Notas</h2>
+            
+            <div class="lista-clases">
+                <!-- Curso 1 -->
+                <div class="tarjeta-clase">
+                    <div class="info-clase">
+                        <span class="materia-nombre">Matemáticas</span>
+                        <div class="detalles-curso">
+                            <span class="etiqueta-info">Curso: 3° A</span>
+                            <span class="etiqueta-info">Turno: Mañana</span>
+                        </div>
+                    </div>
+                    <div class="acciones-clase">
+                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
+                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
+                    </div>
+                </div>
+
+                <!-- Curso 2 -->
+                <div class="tarjeta-clase">
+                    <div class="info-clase">
+                        <span class="materia-nombre">Matemáticas</span>
+                        <div class="detalles-curso">
+                            <span class="etiqueta-info">Curso: 3° B</span>
+                            <span class="etiqueta-info">Turno: Mañana</span>
+                        </div>
+                    </div>
+                    <div class="acciones-clase">
+                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
+                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
+                    </div>
+                </div>
+
+                <!-- Curso 3 -->
+                <div class="tarjeta-clase">
+                    <div class="info-clase">
+                        <span class="materia-nombre">Álgebra</span>
+                        <div class="detalles-curso">
+                            <span class="etiqueta-info">Curso: 4° A</span>
+                            <span class="etiqueta-info">Turno: Mañana</span>
+                        </div>
+                    </div>
+                    <div class="acciones-clase">
+                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
+                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
+                    </div>
+                </div>
+
+                <!-- Curso 4 -->
+                <div class="tarjeta-clase">
+                    <div class="info-clase">
+                        <span class="materia-nombre">Cálculo</span>
+                        <div class="detalles-curso">
+                            <span class="etiqueta-info">Curso: 5° A</span>
+                            <span class="etiqueta-info">Turno: Tarde</span>
+                        </div>
+                    </div>
+                    <div class="acciones-clase">
+                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
+                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Control del menú lateral
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+        const menuLateral = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+
+        function abrirMenu() {
+            menuLateral.classList.add('abierto');
+            overlay.classList.add('activo');
+        }
+
+        function cerrarMenu() {
+            menuLateral.classList.remove('abierto');
+            overlay.classList.remove('activo');
+        }
+
+        btnAbrirMenu.addEventListener('click', abrirMenu);
+        btnCerrarMenu.addEventListener('click', cerrarMenu);
+        overlay.addEventListener('click', cerrarMenu);
+    </script>
+
+</body>
+</html>

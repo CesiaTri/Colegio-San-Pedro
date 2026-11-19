@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Asistencias - Colegio "San Pedro"</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+        .barra-superior {
+            background-color: #1e3a8a;
+            color: white;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn-menu {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-menu:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .titulo-rol {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- MENÚ LATERAL DESPLEGABLE --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 150;
+        }
+
+        .overlay.activo {
+            display: block;
+        }
+
+        .menu-lateral {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: left 0.3s ease;
+            z-index: 200;
+            padding: 20px 15px;
+            overflow-y: auto;
+        }
+
+        .menu-lateral.abierto {
+            left: 0;
+        }
+
+        .menu-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .menu-encabezado span {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .btn-cerrar-menu {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .lista-opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .opcion-menu {
+            display: block;
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .opcion-menu:hover,
+        .opcion-menu.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .menu-desplegable-item {
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .btn-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-desplegable::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        /* Submenús */
+        .sub-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 14px;
+            margin: 4px 0 8px 0;
+            border-left: 2px solid #cbd5e1;
+        }
+
+        .sub-menu.abierto {
+            display: flex;
+        }
+
+        .sub-opcion {
+            text-decoration: none;
+            color: #475569;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sub-opcion:hover,
+        .sub-opcion.activa {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .sub-desplegable {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-desplegable::after {
+            content: '▼';
+            font-size: 9px;
+            transition: transform 0.2s;
+        }
+
+        .sub-desplegable.activo::after {
+            transform: rotate(180deg);
+        }
+
+        .sub-menu-anidado {
+            padding-left: 12px;
+            margin: 2px 0 6px 0;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        .btn-cerrar-sesion {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-cerrar-sesion:hover {
+            background-color: #fecaca;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .contenedor-contenido {
+            flex: 1;
+            padding: 30px 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 95%;
+        }
+
+        .panel-ver-asistencias {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            border-top: 5px solid #1e3a8a;
+        }
+
+        /* Cabecera con Título Centrado */
+        .cabecera-seccion {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .titulo-principal {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Datos de la clase y Selector de mes */
+        .info-selector-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .datos-curso-detalle {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .datos-curso-detalle span {
+            background-color: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .contenedor-select-mes {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contenedor-select-mes label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .select-mes {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: #ffffff;
+            color: #1e293b;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .select-mes:focus {
+            border-color: #1e3a8a;
+        }
+
+        /* Tabla de Asistencia Desplazable */
+        .contenedor-tabla {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .tabla-asistencia-mes {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .tabla-asistencia-mes th, .tabla-asistencia-mes td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .tabla-asistencia-mes th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: bold;
+        }
+
+        .columna-estudiante {
+            text-align: left !important;
+            padding-left: 12px !important;
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+            background-color: #f8fafc;
+            width: 220px;
+        }
+
+        /* Estados de Asistencia (✓ y ✗) */
+        .badge-estado {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .estado-presente {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .estado-ausente {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .estado-sin-clases {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL SUPERIOR -->
+    <header class="barra-superior">
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <div class="titulo-rol">Administrativo</div>
+        <div style="width: 75px;"></div>
+    </header>
+
+    <!-- FONDO OSCURO AL ABRIR MENÚ -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MENÚ LATERAL -->
+    <aside class="menu-lateral" id="menuLateral">
+        <div>
+            <div class="menu-encabezado">
+                <span>Colegio "San Pedro"</span>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+            </div>
+
+            <nav class="lista-opciones">
+                <a href="perfil_administrativo.html" class="opcion-menu">Perfil</a>
+                <a href="password_administrativo.html" class="opcion-menu">Cambiar Contraseña</a>
+
+                <!-- Botón Desplegable: Registro -->
+                <div class="menu-desplegable-item">
+                    <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-registro')">Registro</button>
+                    <div class="sub-menu" id="sub-registro">
+                        <a href="estudiante_registro_administrativo.html" class="sub-opcion">Estudiante</a>
+                        <a href="tutor_registro_administrativo.html" class="sub-opcion">Tutor</a>
+                        <a href="profesor_registro_administrativo.html" class="sub-opcion">Profesor</a>
+                        <a href="matricula_registro_administrativo.html" class="sub-opcion">Matricula</a>
+                        <a href="pagos_registro_administrativo.html" class="sub-opcion">Pagos</a>
+                        <a href="horarios_registro_administrativo.html" class="sub-opcion">Horarios</a>
+                    </div>
+                </div>
+
+                <!-- Botón Desplegable: Reportes -->
+                <div class="menu-desplegable-item">
+                    <button type="button" class="opcion-menu btn-desplegable activo" onclick="toggleSubMenu('sub-reportes')">Reportes</button>
+                    <div class="sub-menu abierto" id="sub-reportes">
+                        <a href="general_reportes_administrativo.html" class="sub-opcion">General</a>
+                        <a href="profesores_reportes_administrativo.html" class="sub-opcion">Profesores</a>
+                        <a href="cursos_reportes_administrativo.html" class="sub-opcion activa">Cursos</a>
+
+                        <!-- Sub-botón Desplegable: Contaduría -->
+                        <div class="menu-desplegable-item">
+                            <button type="button" class="sub-opcion sub-desplegable" onclick="toggleSubMenu('sub-contaduria')">Contaduría</button>
+                            <div class="sub-menu sub-menu-anidado" id="sub-contaduria">
+                                <a href="resumen_contaduria_reportes_administrativo.html" class="sub-opcion">Resumen</a>
+                                <a href="matriculas_sin_pagar_contaduria_reportes_administrativo.html" class="sub-opcion">Matriculas sin pagar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- BOTÓN ROJO SUAVE DE CERRAR SESIÓN -->
+        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="contenedor-contenido">
+        <section class="panel-ver-asistencias">
+
+            <div class="cabecera-seccion">
+                <h2 class="titulo-principal">Asistencias</h2>
+            </div>
+
+            <!-- Datos de la materia y selector de mes -->
+            <div class="info-selector-bar">
+                <div class="datos-curso-detalle">
+                    <span><strong>Materia:</strong> Matemáticas</span>
+                    <span><strong>Curso:</strong> 3° A</span>
+                    <span><strong>Grado:</strong> Secundaria</span>
+                    <span><strong>Turno:</strong> Mañana</span>
+                </div>
+
+                <div class="contenedor-select-mes">
+                    <label for="select-mes">Mes:</label>
+                    <select id="select-mes" class="select-mes">
+                        <option value="8">Septiembre</option>
+                        <option value="9">Octubre</option>
+                        <option value="10" selected>Noviembre</option>
+                        <option value="11">Diciembre</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Cuadrícula de asistencia mensual -->
+            <div class="contenedor-tabla">
+                <table class="tabla-asistencia-mes" id="tablaAsistenciaMes">
+                    <thead>
+                        <tr id="fila-encabezado-dias">
+                            <th class="columna-estudiante">Estudiante</th>
+                            <!-- Los días se generan dinámicamente -->
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-asistencias">
+                        <!-- Generado dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // Control del menú lateral
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+        const menuLateral = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+
+        function abrirMenu() {
+            menuLateral.classList.add('abierto');
+            overlay.classList.add('activo');
+        }
+
+        function cerrarMenu() {
+            menuLateral.classList.remove('abierto');
+            overlay.classList.remove('activo');
+        }
+
+        btnAbrirMenu.addEventListener('click', abrirMenu);
+        btnCerrarMenu.addEventListener('click', cerrarMenu);
+        overlay.addEventListener('click', cerrarMenu);
+
+        function toggleSubMenu(idSubMenu) {
+            const submenu = document.getElementById(idSubMenu);
+            const boton = submenu.previousElementSibling;
+
+            submenu.classList.toggle('abierto');
+            boton.classList.toggle('activo');
+        }
+
+        // --- GENERADOR DE CUADRÍCULA DE ASISTENCIA MENSUAL ---
+        const selectMes = document.getElementById('select-mes');
+        const filaEncabezado = document.getElementById('fila-encabezado-dias');
+        const cuerpoTabla = document.getElementById('cuerpo-tabla-asistencias');
+
+        // Lista de estudiantes de ejemplo para el curso 3° A
+        const listaEstudiantes = [
+            "Alarcón Pérez, Juan Carlos",
+            "Flores Mamani, María Elena",
+            "Gutiérrez Rojas, Rodrigo",
+            "Paz Condori, Andrea Sofía",
+            "Vargas Quispe, Mateo Alejandro"
+        ];
+
+        function generarCuadriculaAsistencia(mesIndex) {
+            const anio = 2026;
+            const totalDias = new Date(anio, mesIndex + 1, 0).getDate();
+
+            // 1. Construir encabezado de días (1 hasta el total de días del mes)
+            let thHTML = '<th class="columna-estudiante">Estudiante</th>';
+            for (let dia = 1; dia <= totalDias; dia++) {
+                thHTML += `<th>${dia}</th>`;
+            }
+            filaEncabezado.innerHTML = thHTML;
+
+            // 2. Construir filas por cada estudiante
+            cuerpoTabla.innerHTML = "";
+            listaEstudiantes.forEach((estudiante, idx) => {
+                const tr = document.createElement('tr');
+                let tdHTML = `<td class="columna-estudiante">${estudiante}</td>`;
+
+                for (let dia = 1; dia <= totalDias; dia++) {
+                    const fechaActual = new Date(anio, mesIndex, dia);
+                    const esDomingo = fechaActual.getDay() === 0;
+
+                    if (esDomingo) {
+                        tdHTML += `<td><span class="badge-estado estado-sin-clases" title="Sin clases">--</span></td>`;
+                    } else {
+                        // Simulación de estados: '✓' para presente, '✗' para ausente
+                        let asistio = true;
+                        if ((dia + idx) % 7 === 0) {
+                            asistio = false;
+                        }
+
+                        const simbolo = asistio ? "✓" : "✗";
+                        const claseBadge = asistio ? "estado-presente" : "estado-ausente";
+                        tdHTML += `<td><span class="badge-estado ${claseBadge}">${simbolo}</span></td>`;
+                    }
+                }
+
+                tr.innerHTML = tdHTML;
+                cuerpoTabla.appendChild(tr);
+            });
+        }
+
+        // Cargar por defecto con el valor seleccionado (Noviembre = 10)
+        generarCuadriculaAsistencia(parseInt(selectMes.value));
+
+        // Actualizar al cambiar de mes
+        selectMes.addEventListener('change', function() {
+            generarCuadriculaAsistencia(parseInt(this.value));
+        });
+    </script>
+
+</body>
+</html>

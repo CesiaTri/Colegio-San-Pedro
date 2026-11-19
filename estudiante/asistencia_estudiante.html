@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Asistencia - Colegio "San Pedro"</title>
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        color: #334155;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+    .barra-superior {
+        background-color: #1e3a8a;
+        color: white;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 100;
+    }
+
+    .btn-menu {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-menu:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .titulo-rol {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* --- MENÚ LATERAL DESPLEGABLE --- */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 150;
+    }
+
+    .overlay.activo {
+        display: block;
+    }
+
+    .menu-lateral {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 270px;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: left 0.3s ease;
+        z-index: 200;
+        padding: 20px 15px;
+    }
+
+    .menu-lateral.abierto {
+        left: 0;
+    }
+
+    .menu-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .menu-encabezado span {
+        font-weight: 700;
+        color: #1e3a8a;
+        font-size: 16px;
+    }
+
+    .btn-cerrar-menu {
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #64748b;
+        cursor: pointer;
+    }
+
+    .lista-opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .opcion-menu {
+        display: block;
+        text-decoration: none;
+        color: #334155;
+        padding: 12px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+
+    .opcion-menu:hover, .opcion-menu.activa {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    /* Botón Cerrar Sesión al final */
+    .btn-cerrar-sesion {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: background-color 0.2s;
+    }
+
+    .btn-cerrar-sesion:hover {
+        background-color: #fecaca;
+    }
+
+    /* --- CONTENIDO PRINCIPAL: ASISTENCIA --- */
+    .asistencia-container {
+      max-width: 980px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #1e3a8a;
+      width: 95%;
+    }
+
+    /* Cabecera con Menú Desplegable de Meses */
+    .mes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .mes-header h1 {
+      color: #1e3a8a;
+      font-size: 24px;
+      text-transform: capitalize;
+    }
+
+    .select-mes {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      font-weight: 600;
+      background-color: #ffffff;
+      color: #1e293b;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .select-mes:focus {
+      border-color: #1e3a8a;
+    }
+
+    /* Tabla / Cuadrícula de Asistencia (7 columnas: Lunes a Domingo) */
+    .tabla-asistencia {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tabla-asistencia th, .tabla-asistencia td {
+      border: 1px solid #cbd5e1;
+      padding: 6px;
+      text-align: center;
+      vertical-align: top;
+      height: 75px;
+      width: 14.28%;
+    }
+
+    .tabla-asistencia th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: bold;
+      text-transform: capitalize;
+      height: auto;
+      padding: 12px 6px;
+      font-size: 13px;
+    }
+
+    /* Estilos dentro de cada celda de día */
+    .num-dia {
+      font-weight: bold;
+      font-size: 13px;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .estado {
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .presente {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .ausente {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .sin-clases {
+      background-color: #f1f5f9;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      border: 1px solid #e2e8f0;
+    }
+
+    .celda-vacia {
+      background-color: #fafafa;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANEL SUPERIOR -->
+  <header class="barra-superior">
+      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <div class="titulo-rol">Estudiante</div>
+      <div style="width: 75px;"></div>
+  </header>
+
+  <!-- FONDO OSCURO AL ABRIR MENÚ -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MENÚ LATERAL (SIDEBAR) -->
+  <aside class="menu-lateral" id="menuLateral">
+      <div>
+          <div class="menu-encabezado">
+              <span>Colegio "San Pedro"</span>
+              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+          </div>
+          <nav class="lista-opciones">
+              <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
+              <a href="notas_estudiante.html" class="opcion-menu">Notas</a>
+              <a href="horario_estudiante.html" class="opcion-menu">Horario</a>
+              <a href="matricula_estudiante.html" class="opcion-menu">Matrícula</a>
+              <a href="asistencia_estudiante.html" class="opcion-menu activa">Asistencia</a>
+              <a href="password_estudiante.html" class="opcion-menu">Cambiar contraseña</a>
+          </nav>
+      </div>
+
+      <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+  </aside>
+
+  <!-- Contenido de Asistencia -->
+  <main class="asistencia-container">
+    
+    <!-- Selección del Mes (Septiembre a Diciembre 2026) -->
+    <div class="mes-header">
+      <h1 id="titulo-mes">Septiembre</h1>
+      <select id="select-mes" class="select-mes">
+        <option value="8">Septiembre</option>
+        <option value="9">Octubre</option>
+        <option value="10" selected>Noviembre</option>
+        <option value="11">Diciembre</option>
+      </select>
+    </div>
+
+    <!-- Cuadrícula de asistencia (7 columnas: Lunes a Domingo) -->
+    <table class="tabla-asistencia">
+      <thead>
+        <tr>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miércoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+          <th>Sábado</th>
+          <th>Domingo</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-tabla">
+        <!-- Generado dinámicamente con JavaScript -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+      // Control del menú lateral
+      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+      const menuLateral = document.getElementById('menuLateral');
+      const overlay = document.getElementById('overlay');
+
+      function abrirMenu() {
+          menuLateral.classList.add('abierto');
+          overlay.classList.add('activo');
+      }
+
+      function cerrarMenu() {
+          menuLateral.classList.remove('abierto');
+          overlay.classList.remove('activo');
+      }
+
+      btnAbrirMenu.addEventListener('click', abrirMenu);
+      btnCerrarMenu.addEventListener('click', cerrarMenu);
+      overlay.addEventListener('click', cerrarMenu);
+
+      // --- GENERADOR AUTOMÁTICO DE CALENDARIO 2026 ---
+      const selectMes = document.getElementById('select-mes');
+      const tituloMes = document.getElementById('titulo-mes');
+      const cuerpoTabla = document.getElementById('cuerpo-tabla');
+
+      const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+      function generarCalendario2026(mesIndex) {
+          const anio = 2026;
+          tituloMes.textContent = nombresMeses[mesIndex];
+          cuerpoTabla.innerHTML = "";
+
+          // Primer día del mes (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
+          const primerDiaFecha = new Date(anio, mesIndex, 1);
+          let diaSemanaInicio = primerDiaFecha.getDay(); 
+          // Ajustamos para que la semana empiece en Lunes (Lunes = 0, ..., Domingo = 6)
+          diaSemanaInicio = (diaSemanaInicio === 0) ? 6 : diaSemanaInicio - 1;
+
+          // Total de días del mes
+          const totalDias = new Date(anio, mesIndex + 1, 0).getDate();
+
+          let diaActual = 1;
+          let celdaContador = 0;
+
+          // Generamos las filas necesarias (máximo 6 semanas)
+          for (let semana = 0; semana < 6; semana++) {
+              if (diaActual > totalDias) break;
+
+              const tr = document.createElement('tr');
+
+              for (let i = 0; i < 7; i++) {
+                  const td = document.createElement('td');
+
+                  // Si estamos antes del primer día del mes en la primera semana
+                  if (semana === 0 && i < diaSemanaInicio) {
+                      td.className = "celda-vacia";
+                      td.innerHTML = "";
+                  } 
+                  else if (diaActual <= totalDias) {
+                      // i === 6 representa el DOMINGO
+                      if (i === 6) {
+                          td.innerHTML = `
+                              <div class="num-dia">${diaActual}</div>
+                              <span class="sin-clases">Sin clases</span>
+                          `;
+                      } else {
+                          // Simulamos un estado de asistencia de ejemplo para que veas los colores
+                          // (Puedes conectar esto a tu base de datos reemplazando esta lógica)
+                          let asistencia = "presente";
+                          if (diaActual === 5 || diaActual === 17) {
+                              asistencia = "ausente";
+                          } else if (diaActual === 12 || diaActual === 25) {
+                              asistencia = null; // Simula dato vacío o null -> mostrará "Sin clases"
+                          }
+
+                          if (asistencia === null || asistencia === "" || asistencia === undefined) {
+                              td.innerHTML = `
+                                  <div class="num-dia">${diaActual}</div>
+                                  <span class="sin-clases">Sin clases</span>
+                              `;
+                          } else {
+                              const textoEstado = asistencia.charAt(0).toUpperCase() + asistencia.slice(1);
+                              td.innerHTML = `
+                                  <div class="num-dia">${diaActual}</div>
+                                  <span class="estado ${asistencia}">${textoEstado}</span>
+                              `;
+                          }
+                      }
+                      diaActual++;
+                  } else {
+                      td.className = "celda-vacia";
+                      td.innerHTML = "";
+                  }
+
+                  tr.appendChild(td);
+              }
+              cuerpoTabla.appendChild(tr);
+          }
+      }
+
+      // Cargar por defecto el valor inicial del selector (Noviembre = 10)
+      generarCalendario2026(parseInt(selectMes.value));
+
+      // Actualizar la tabla al cambiar de mes en el menú desplegable
+      selectMes.addEventListener('change', function() {
+          generarCalendario2026(parseInt(this.value));
+      });
+  </script>
+
+  <script src="asistenciaEstudiante.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
+</body>
+</html>

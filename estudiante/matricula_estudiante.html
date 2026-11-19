@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrícula del Estudiante - Colegio "San Pedro"</title>
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        color: #334155;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+    .barra-superior {
+        background-color: #1e3a8a;
+        color: white;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 100;
+    }
+
+    .btn-menu {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-menu:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .titulo-rol {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* --- MENÚ LATERAL DESPLEGABLE --- */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 150;
+    }
+
+    .overlay.activo {
+        display: block;
+    }
+
+    .menu-lateral {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 270px;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: left 0.3s ease;
+        z-index: 200;
+        padding: 20px 15px;
+    }
+
+    .menu-lateral.abierto {
+        left: 0;
+    }
+
+    .menu-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .menu-encabezado span {
+        font-weight: 700;
+        color: #1e3a8a;
+        font-size: 16px;
+    }
+
+    .btn-cerrar-menu {
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #64748b;
+        cursor: pointer;
+    }
+
+    .lista-opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .opcion-menu {
+        display: block;
+        text-decoration: none;
+        color: #334155;
+        padding: 12px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+
+    .opcion-menu:hover, .opcion-menu.activa {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    /* Botón Cerrar Sesión al final */
+    .btn-cerrar-sesion {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: background-color 0.2s;
+    }
+
+    .btn-cerrar-sesion:hover {
+        background-color: #fecaca;
+    }
+
+    /* --- CONTENIDO PRINCIPAL: MATRÍCULA --- */
+    .matricula-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 35px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #1e3a8a;
+      width: 90%;
+    }
+
+    .matricula-container h1 {
+      margin-bottom: 25px;
+      color: #1e3a8a;
+      font-size: 24px;
+      text-align: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Campos alineados */
+    .campo {
+      margin-bottom: 16px;
+      font-size: 15px;
+      color: #334155;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .campo:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .campo strong {
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .campo span {
+      font-weight: 600;
+      color: #1e293b;
+      font-size: 16px;
+    }
+
+    /* --- ESTILOS PARA LOS RECUADROS DE ESTADO --- */
+    .estado-badge {
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* Verde suave si Estado == Pagado / Pagada */
+    .estado-verde {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Rojo suave si Estado != Pagado (ej. Pendiente, Sin pagar, Adeudada) */
+    .estado-rojo {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANEL SUPERIOR -->
+  <header class="barra-superior">
+      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <div class="titulo-rol">Estudiante</div>
+      <div style="width: 75px;"></div>
+  </header>
+
+  <!-- FONDO OSCURO AL ABRIR MENÚ -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MENÚ LATERAL (SIDEBAR) -->
+  <aside class="menu-lateral" id="menuLateral">
+      <div>
+          <div class="menu-encabezado">
+              <span>Colegio "San Pedro"</span>
+              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+          </div>
+          <nav class="lista-opciones">
+              <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
+              <a href="notas_estudiante.html" class="opcion-menu">Notas</a>
+              <a href="horario_estudiante.html" class="opcion-menu">Horario</a>
+              <a href="matricula_estudiante.html" class="opcion-menu activa">Matrícula</a>
+              <a href="asistencia_estudiante.html" class="opcion-menu">Asistencia</a>
+              <a href="password_estudiante.html" class="opcion-menu">Cambiar contraseña</a>
+          </nav>
+      </div>
+
+      <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+  </aside>
+
+  <!-- Contenido de Matrícula -->
+  <main class="matricula-container">
+    <h1>Información de Matrícula</h1>
+    
+    <div class="campo">
+      <strong>ID de Matrícula:</strong>
+      <span id="mat-id">MAT-2026-0849</span>
+    </div>
+
+    <div class="campo">
+      <strong>Estudiante:</strong>
+      <span id="mat-estudiante">Mateo Alejandro Vargas Quispe</span>
+    </div>
+
+    <div class="campo">
+      <strong>Curso:</strong>
+      <span id="mat-curso">3° de Secundaria ("A")</span>
+    </div>
+
+    <div class="campo">
+      <strong>Nivel:</strong>
+      <span id="mat-nivel">Secundaria Comunitaria Productiva</span>
+    </div>
+
+    <div class="campo">
+      <strong>Turno:</strong>
+      <span id="mat-turno">Mañana</span>
+    </div>
+
+    <div class="campo">
+      <strong>Gestión:</strong>
+      <span id="mat-gestion">2026</span>
+    </div>
+
+    <div class="campo">
+      <strong>Fecha de Registro:</strong>
+      <span id="mat-fecha">15/01/2026</span>
+    </div>
+
+    <div class="campo">
+      <strong>Estado:</strong>
+      <!-- Puedes cambiar el texto aquí a "Pendiente" o "Sin pagar" para ver el recuadro rojo -->
+      <span id="mat-estado" class="estado-badge">Pagado</span>
+    </div>
+  </main>
+
+  <script>
+      // Control del menú lateral
+      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+      const menuLateral = document.getElementById('menuLateral');
+      const overlay = document.getElementById('overlay');
+
+      function abrirMenu() {
+          menuLateral.classList.add('abierto');
+          overlay.classList.add('activo');
+      }
+
+      function cerrarMenu() {
+          menuLateral.classList.remove('abierto');
+          overlay.classList.remove('activo');
+      }
+
+      btnAbrirMenu.addEventListener('click', abrirMenu);
+      btnCerrarMenu.addEventListener('click', cerrarMenu);
+      overlay.addEventListener('click', cerrarMenu);
+
+      // --- LÓGICA AUTOMÁTICA PARA EL COLOR DEL ESTADO ---
+      const spanEstado = document.getElementById('mat-estado');
+      // Obtenemos el texto del estado en minúsculas para compararlo sin errores
+      const textoEstado = spanEstado.textContent.trim().toLowerCase();
+
+      // Limpiamos clases anteriores
+      spanEstado.className = "estado-badge"; 
+
+      // Si el estado es "pagado" o "pagada", se pinta de verde suave; de lo contrario, de rojo suave
+      if (textoEstado === 'pagado' || textoEstado === 'pagada') {
+          spanEstado.classList.add('estado-verde');
+      } else {
+          spanEstado.classList.add('estado-rojo');
+      }
+  </script>
+
+  <script src="matriculaEstudiante.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
+</body>
+</html>

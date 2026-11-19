@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horario del Estudiante (Vista Tutor) - Colegio "San Pedro"</title>
+  <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f4f7f6;
+        color: #334155;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* --- PANEL SUPERIOR (BARRA DE NAVEGACIÓN) --- */
+    .barra-superior {
+        background-color: #1e3a8a;
+        color: white;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        position: relative;
+        z-index: 100;
+    }
+
+    .btn-menu {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-menu:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .titulo-rol {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* --- MENÚ LATERAL DESPLEGABLE --- */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 150;
+    }
+
+    .overlay.activo {
+        display: block;
+    }
+
+    .menu-lateral {
+        position: fixed;
+        top: 0;
+        left: -290px;
+        width: 280px;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: left 0.3s ease;
+        z-index: 200;
+        padding: 20px 15px;
+        overflow-y: auto;
+    }
+
+    .menu-lateral.abierto {
+        left: 0;
+    }
+
+    .menu-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .menu-encabezado span {
+        font-weight: 700;
+        color: #1e3a8a;
+        font-size: 16px;
+    }
+
+    .btn-cerrar-menu {
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: #64748b;
+        cursor: pointer;
+    }
+
+    .lista-opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .opcion-menu {
+        display: block;
+        text-decoration: none;
+        color: #334155;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+
+    .opcion-menu:hover, .opcion-menu.activa {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    /* Estilos de Sección de Estudiantes en el Menú */
+    .seccion-titulo {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        margin: 15px 0 5px 5px;
+        letter-spacing: 0.5px;
+    }
+
+    .menu-desplegable-item {
+        position: relative;
+    }
+
+    .btn-desplegable {
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-desplegable::after {
+        content: '▼';
+        font-size: 10px;
+        transition: transform 0.2s;
+    }
+
+    .btn-desplegable.activo::after {
+        transform: rotate(180deg);
+    }
+
+    .sub-menu {
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        padding-left: 15px;
+        margin: 4px 0 8px 0;
+        border-left: 2px solid #e2e8f0;
+    }
+
+    .sub-menu.abierto {
+        display: flex;
+    }
+
+    .sub-opcion {
+        text-decoration: none;
+        color: #475569;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .sub-opcion:hover, .sub-opcion.activa {
+        background-color: #f1f5f9;
+        color: #1d4ed8;
+    }
+
+    /* Botón Cerrar Sesión al final */
+    .btn-cerrar-sesion {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background-color: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: background-color 0.2s;
+        margin-top: 15px;
+    }
+
+    .btn-cerrar-sesion:hover {
+        background-color: #fecaca;
+    }
+
+    /* --- CONTENIDO PRINCIPAL: HORARIO --- */
+    .horario-container {
+      max-width: 950px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #1e3a8a;
+      width: 92%;
+    }
+
+    .horario-container h1 {
+      color: #1e3a8a;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .info-estudiante {
+      text-align: center;
+      font-size: 15px;
+      color: #475569;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    /* Tabla / Cuadrícula de Horario */
+    .tabla-horario {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tabla-horario th, .tabla-horario td {
+      border: 1px solid #cbd5e1;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .tabla-horario th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .tabla-horario td.hora {
+      font-weight: bold;
+      background-color: #f8fafc;
+      color: #334155;
+      width: 140px;
+    }
+
+    /* Estilo para la fila de Recreo en Verde Agua Suave */
+    .fila-recreo {
+      background-color: #ccfbf1 !important;
+      font-weight: bold;
+      color: #115e59;
+      letter-spacing: 1.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANEL SUPERIOR -->
+  <header class="barra-superior">
+      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <div class="titulo-rol">Tutor</div>
+      <div style="width: 75px;"></div>
+  </header>
+
+  <!-- FONDO OSCURO AL ABRIR MENÚ -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MENÚ LATERAL (SIDEBAR) -->
+  <aside class="menu-lateral" id="menuLateral">
+      <div>
+          <div class="menu-encabezado">
+              <span>Colegio "San Pedro"</span>
+              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+          </div>
+          <nav class="lista-opciones">
+              <a href="perfil_tutor.html" class="opcion-menu">Perfil</a>
+              <a href="password_tutor.html" class="opcion-menu">Cambiar Contraseña</a>
+
+              <div class="seccion-titulo">Estudiantes Asociados</div>
+
+              <!-- Botón Desplegable: Perfil -->
+              <div class="menu-desplegable-item">
+                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
+                  <div class="sub-menu" id="sub-perfil">
+                      <a href="perfil_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                      <a href="perfil_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                  </div>
+              </div>
+
+              <!-- Botón Desplegable: Notas -->
+              <div class="menu-desplegable-item">
+                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
+                  <div class="sub-menu" id="sub-notas">
+                      <a href="notas_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                      <a href="notas_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                  </div>
+              </div>
+
+              <!-- Botón Desplegable: Horario -->
+              <div class="menu-desplegable-item">
+                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
+                  <div class="sub-menu abierto" id="sub-horario">
+                      <a href="horario_est_tutor.html?id=1" class="sub-opcion activa">Mateo Vargas (Estudiante 1)</a>
+                      <a href="horario_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                  </div>
+              </div>
+
+              <!-- Botón Desplegable: Matrícula -->
+              <div class="menu-desplegable-item">
+                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
+                  <div class="sub-menu" id="sub-matricula">
+                      <a href="matricula_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                      <a href="matricula_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                  </div>
+              </div>
+
+              <!-- Botón Desplegable: Asistencia -->
+              <div class="menu-desplegable-item">
+                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
+                  <div class="sub-menu" id="sub-asistencia">
+                      <a href="asistencia_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
+                      <a href="asistencia_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
+                  </div>
+              </div>
+          </nav>
+      </div>
+
+      <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
+      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+  </aside>
+
+  <!-- Contenido de Horario -->
+  <main class="horario-container">
+    <h1>Horario de Clases</h1>
+    <div class="info-estudiante" id="info-estudiante-texto">Estudiante: Mateo Alejandro Vargas Quispe (Turno Mañana)</div>
+
+    <table class="tabla-horario">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miércoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-tabla-horario">
+        <!-- Generado dinámicamente -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+      // Control del menú lateral
+      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
+      const menuLateral = document.getElementById('menuLateral');
+      const overlay = document.getElementById('overlay');
+
+      function abrirMenu() {
+          menuLateral.classList.add('abierto');
+          overlay.classList.add('activo');
+      }
+
+      function cerrarMenu() {
+          menuLateral.classList.remove('abierto');
+          overlay.classList.remove('activo');
+      }
+
+      btnAbrirMenu.addEventListener('click', abrirMenu);
+      btnCerrarMenu.addEventListener('click', cerrarMenu);
+      overlay.addEventListener('click', cerrarMenu);
+
+      function toggleSubMenu(idSubMenu) {
+          const submenu = document.getElementById(idSubMenu);
+          const boton = submenu.previousElementSibling;
+          submenu.classList.toggle('abierto');
+          boton.classList.toggle('activo');
+      }
+
+      // --- LEER EL ID DEL ESTUDIANTE DESDE LA URL (ej: ?id=1 o ?id=2) ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const estudianteId = urlParams.get('id') || '1';
+
+      // Base de datos de horarios para los estudiantes
+      const baseDatosHorarios = {
+          '1': {
+              nombre: "Mateo Alejandro Vargas Quispe",
+              turno: "mañana",
+              bloques: [
+                  { hora: "8:00 a 9:00", tipo: "clase", materias: ["Matemáticas", "Lenguaje", "Física", "Química", "Biología"] },
+                  { hora: "9:00 a 10:00", tipo: "clase", materias: ["Sociales", "Matemáticas", "Inglés", "Lenguaje", "Física"] },
+                  { hora: "10:00 a 10:15", tipo: "recreo", texto: "RECREO" },
+                  { hora: "10:15 a 11:15", tipo: "clase", materias: ["Artes Plásticas", "Biología", "Sociales", "Música", "Matemáticas"] },
+                  { hora: "11:15 a 12:15", tipo: "clase", materias: ["Educación Física", "Química", "Informática", "Religión", "Inglés"] }
+              ]
+          },
+          '2': {
+              nombre: "Lucía Fernanda Vargas Quispe",
+              turno: "tarde",
+              bloques: [
+                  { hora: "1:30 a 2:30", tipo: "clase", materias: ["Biología", "Literatura", "Química", "Matemáticas", "Historia"] },
+                  { hora: "2:30 a 3:30", tipo: "clase", materias: ["Inglés", "Física", "Geografía", "Artes", "Civica"] },
+                  { hora: "3:30 a 3:45", tipo: "recreo", texto: "RECREO" },
+                  { hora: "3:45 a 4:45", tipo: "clase", materias: ["Música", "Computación", "Matemáticas", "Biología", "Deportes"] },
+                  { hora: "4:45 a 5:45", tipo: "clase", materias: ["Religión", "Sociales", "Química", "Literatura", "Física"] }
+              ]
+          }
+      };
+
+      const alumnoHorario = baseDatosHorarios[estudianteId] || baseDatosHorarios['1'];
+
+      // Actualizar texto informativo del estudiante
+      document.getElementById('info-estudiante-texto').textContent = `Estudiante: ${alumnoHorario.nombre} (Turno ${alumnoHorario.turno.charAt(0).toUpperCase() + alumnoHorario.turno.slice(1)})`;
+
+      const tbodyHorario = document.getElementById('cuerpo-tabla-horario');
+      tbodyHorario.innerHTML = "";
+
+      alumnoHorario.bloques.forEach(bloque => {
+          const tr = document.createElement('tr');
+
+          if (bloque.tipo === "recreo") {
+              tr.className = "fila-recreo";
+              tr.innerHTML = `
+                  <td class="hora">${bloque.hora}</td>
+                  <td colspan="5">${bloque.texto}</td>
+              `;
+          } else {
+              tr.innerHTML = `
+                  <td class="hora">${bloque.hora}</td>
+                  <td>${bloque.materias[0]}</td>
+                  <td>${bloque.materias[1]}</td>
+                  <td>${bloque.materias[2]}</td>
+                  <td>${bloque.materias[3]}</td>
+                  <td>${bloque.materias[4]}</td>
+              `;
+          }
+
+          tbodyHorario.appendChild(tr);
+      });
+  </script>
+</body>
+</html>

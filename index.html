@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Colegio "San Pedro"</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            background-color: #f4f7f6;
+        }
+
+        .contenedor-principal {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Mitad Izquierda: Formulario */
+        .panel-formulario {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 40px;
+        }
+
+        .caja-login {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .caja-login h2 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .caja-login p {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .grupo-input {
+            margin-bottom: 20px;
+        }
+
+        .grupo-input label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .grupo-input input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .grupo-input input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .btn-ingresar {
+            width: 100%;
+            padding: 12px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-ingresar:hover {
+            background-color: #1d4ed8;
+        }
+
+        .mensaje-error {
+            color: #dc2626;
+            background-color: #fee2e2;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Mitad Derecha: Branding / Nombre del Colegio */
+        .panel-colegio {
+            flex: 1;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .panel-colegio h1 {
+            font-size: 48px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-colegio p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 400px;
+        }
+
+        /* Diseño responsivo para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .contenedor-principal {
+                flex-direction: column-reverse;
+            }
+            .panel-colegio {
+                flex: none;
+                padding: 30px 20px;
+            }
+            .panel-colegio h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <!-- Mitad 1: Formulario de inicio de sesión -->
+        <div class="panel-formulario">
+            <div class="caja-login">
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales institucionales para continuar</p>
+                
+                <form id="formLogin">
+                    <div class="grupo-input">
+                        <label for="correo">Correo electrónico</label>
+                        <input type="email" id="correo" placeholder="usuario@gmail.com" required>
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn-ingresar">Verificar e Ingresar</button>
+                    
+                    <div id="mensajeError" class="mensaje-error">
+                        Correo o contraseña incorrectos.
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Mitad 2: Identidad del Colegio -->
+        <div class="panel-colegio">
+            <h1>Colegio "San Pedro"</h1>
+            <p>Sistema de Gestión Académica y Administrativa</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita que la página se recargue al enviar
+
+            // Obtener valores y limpiar espacios extra
+            const correo = document.getElementById('correo').value.trim().toLowerCase();
+            const password = document.getElementById('password').value.trim();
+            const mensajeError = document.getElementById('mensajeError');
+
+            // Diccionario de usuarios permitidos y sus rutas correspondientes
+            const usuarios = {
+                'estudiante@gmail.com': {
+                    pass: 'estudiante',
+                    ruta: 'estudiante/perfil_estudiante.html'
+                },
+                'profesor@gmail.com': {
+                    pass: 'profesor',
+                    ruta: 'profesor/perfil_profesor.html'
+                },
+                'tutor@gmail.com': {
+                    pass: 'tutor',
+                    ruta: 'tutor/perfil_tutor.html'
+                },
+                'administrativo@gmail.com': {
+                    pass: 'administrativo',
+                    ruta: 'administrativo/perfil_administrativo.html'
+                }
+            };
+
+            // Verificar si el correo existe y si la contraseña coincide
+            if (usuarios[correo] && usuarios[correo].pass === password) {
+                mensajeError.style.display = 'none';
+                // Redirigir a la subcarpeta correspondiente
+                window.location.href = usuarios[correo].ruta;
+            } else {
+                // Mostrar alerta de error
+                mensajeError.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>
