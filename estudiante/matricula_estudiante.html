@@ -242,7 +242,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Estudiante</div>
       <div style="width: 75px;"></div>
   </header>
@@ -255,7 +255,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           <nav class="lista-opciones">
               <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
@@ -268,7 +268,7 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Matrícula -->
@@ -277,83 +277,48 @@
     
     <div class="campo">
       <strong>ID de Matrícula:</strong>
-      <span id="mat-id">MAT-2026-0849</span>
+      <span id="mat-id">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Estudiante:</strong>
-      <span id="mat-estudiante">Mateo Alejandro Vargas Quispe</span>
+      <span id="mat-estudiante">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Curso:</strong>
-      <span id="mat-curso">3° de Secundaria ("A")</span>
+      <span id="mat-curso">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Nivel:</strong>
-      <span id="mat-nivel">Secundaria Comunitaria Productiva</span>
+      <span id="mat-nivel">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Turno:</strong>
-      <span id="mat-turno">Mañana</span>
+      <span id="mat-turno">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Gestión:</strong>
-      <span id="mat-gestion">2026</span>
+      <span id="mat-gestion">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Fecha de Registro:</strong>
-      <span id="mat-fecha">15/01/2026</span>
+      <span id="mat-fecha">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Estado:</strong>
-      <!-- Puedes cambiar el texto aquí a "Pendiente" o "Sin pagar" para ver el recuadro rojo -->
-      <span id="mat-estado" class="estado-badge">Pagado</span>
+      <span id="mat-estado" class="estado-badge estado-rojo">Cargando...</span>
     </div>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
+  <!-- SDK de Supabase y JS independiente para matrícula del estudiante -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="matriculaEstudiante.js"></script>
 
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      // --- LÓGICA AUTOMÁTICA PARA EL COLOR DEL ESTADO ---
-      const spanEstado = document.getElementById('mat-estado');
-      // Obtenemos el texto del estado en minúsculas para compararlo sin errores
-      const textoEstado = spanEstado.textContent.trim().toLowerCase();
-
-      // Limpiamos clases anteriores
-      spanEstado.className = "estado-badge"; 
-
-      // Si el estado es "pagado" o "pagada", se pinta de verde suave; de lo contrario, de rojo suave
-      if (textoEstado === 'pagado' || textoEstado === 'pagada') {
-          spanEstado.classList.add('estado-verde');
-      } else {
-          spanEstado.classList.add('estado-rojo');
-      }
-  </script>
-
-  <script src="matriculaEstudiante.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
 </body>
 </html>

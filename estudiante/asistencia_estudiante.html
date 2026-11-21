@@ -279,7 +279,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Estudiante</div>
       <div style="width: 75px;"></div>
   </header>
@@ -292,7 +292,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           <nav class="lista-opciones">
               <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
@@ -305,7 +305,7 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Asistencia -->
@@ -313,7 +313,7 @@
     
     <!-- Selección del Mes (Septiembre a Diciembre 2026) -->
     <div class="mes-header">
-      <h1 id="titulo-mes">Septiembre</h1>
+      <h1 id="titulo-mes">Noviembre</h1>
       <select id="select-mes" class="select-mes">
         <option value="8">Septiembre</option>
         <option value="9">Octubre</option>
@@ -341,116 +341,9 @@
     </table>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
+  <!-- SDK de Supabase y JS independiente para asistencia del estudiante -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="asistenciaEstudiante.js"></script>
 
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      // --- GENERADOR AUTOMÁTICO DE CALENDARIO 2026 ---
-      const selectMes = document.getElementById('select-mes');
-      const tituloMes = document.getElementById('titulo-mes');
-      const cuerpoTabla = document.getElementById('cuerpo-tabla');
-
-      const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-      function generarCalendario2026(mesIndex) {
-          const anio = 2026;
-          tituloMes.textContent = nombresMeses[mesIndex];
-          cuerpoTabla.innerHTML = "";
-
-          // Primer día del mes (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
-          const primerDiaFecha = new Date(anio, mesIndex, 1);
-          let diaSemanaInicio = primerDiaFecha.getDay(); 
-          // Ajustamos para que la semana empiece en Lunes (Lunes = 0, ..., Domingo = 6)
-          diaSemanaInicio = (diaSemanaInicio === 0) ? 6 : diaSemanaInicio - 1;
-
-          // Total de días del mes
-          const totalDias = new Date(anio, mesIndex + 1, 0).getDate();
-
-          let diaActual = 1;
-          let celdaContador = 0;
-
-          // Generamos las filas necesarias (máximo 6 semanas)
-          for (let semana = 0; semana < 6; semana++) {
-              if (diaActual > totalDias) break;
-
-              const tr = document.createElement('tr');
-
-              for (let i = 0; i < 7; i++) {
-                  const td = document.createElement('td');
-
-                  // Si estamos antes del primer día del mes en la primera semana
-                  if (semana === 0 && i < diaSemanaInicio) {
-                      td.className = "celda-vacia";
-                      td.innerHTML = "";
-                  } 
-                  else if (diaActual <= totalDias) {
-                      // i === 6 representa el DOMINGO
-                      if (i === 6) {
-                          td.innerHTML = `
-                              <div class="num-dia">${diaActual}</div>
-                              <span class="sin-clases">Sin clases</span>
-                          `;
-                      } else {
-                          // Simulamos un estado de asistencia de ejemplo para que veas los colores
-                          // (Puedes conectar esto a tu base de datos reemplazando esta lógica)
-                          let asistencia = "presente";
-                          if (diaActual === 5 || diaActual === 17) {
-                              asistencia = "ausente";
-                          } else if (diaActual === 12 || diaActual === 25) {
-                              asistencia = null; // Simula dato vacío o null -> mostrará "Sin clases"
-                          }
-
-                          if (asistencia === null || asistencia === "" || asistencia === undefined) {
-                              td.innerHTML = `
-                                  <div class="num-dia">${diaActual}</div>
-                                  <span class="sin-clases">Sin clases</span>
-                              `;
-                          } else {
-                              const textoEstado = asistencia.charAt(0).toUpperCase() + asistencia.slice(1);
-                              td.innerHTML = `
-                                  <div class="num-dia">${diaActual}</div>
-                                  <span class="estado ${asistencia}">${textoEstado}</span>
-                              `;
-                          }
-                      }
-                      diaActual++;
-                  } else {
-                      td.className = "celda-vacia";
-                      td.innerHTML = "";
-                  }
-
-                  tr.appendChild(td);
-              }
-              cuerpoTabla.appendChild(tr);
-          }
-      }
-
-      // Cargar por defecto el valor inicial del selector (Noviembre = 10)
-      generarCalendario2026(parseInt(selectMes.value));
-
-      // Actualizar la tabla al cambiar de mes en el menú desplegable
-      selectMes.addEventListener('change', function() {
-          generarCalendario2026(parseInt(this.value));
-      });
-  </script>
-
-  <script src="asistenciaEstudiante.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
 </body>
 </html>

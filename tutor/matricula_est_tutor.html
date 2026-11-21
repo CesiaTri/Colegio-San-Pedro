@@ -307,7 +307,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Tutor</div>
       <div style="width: 75px;"></div>
   </header>
@@ -320,7 +320,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           <nav class="lista-opciones">
               <a href="perfil_tutor.html" class="opcion-menu">Perfil</a>
@@ -330,7 +330,7 @@
 
               <!-- Botón Desplegable: Perfil -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
                   <div class="sub-menu" id="sub-perfil">
                       <a href="perfil_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="perfil_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -339,7 +339,7 @@
 
               <!-- Botón Desplegable: Notas -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
                   <div class="sub-menu" id="sub-notas">
                       <a href="notas_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="notas_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -348,7 +348,7 @@
 
               <!-- Botón Desplegable: Horario -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
                   <div class="sub-menu" id="sub-horario">
                       <a href="horario_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="horario_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -357,7 +357,7 @@
 
               <!-- Botón Desplegable: Matrícula -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
                   <div class="sub-menu abierto" id="sub-matricula">
                       <a href="matricula_est_tutor.html?id=1" class="sub-opcion activa">Mateo Vargas (Estudiante 1)</a>
                       <a href="matricula_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -366,7 +366,7 @@
 
               <!-- Botón Desplegable: Asistencia -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
                   <div class="sub-menu" id="sub-asistencia">
                       <a href="asistencia_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="asistencia_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -376,7 +376,7 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Matrícula -->
@@ -385,125 +385,48 @@
     
     <div class="campo">
       <strong>ID de Matrícula:</strong>
-      <span id="mat-id">---</span>
+      <span id="mat-id">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Estudiante:</strong>
-      <span id="mat-estudiante">---</span>
+      <span id="mat-estudiante">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Curso:</strong>
-      <span id="mat-curso">---</span>
+      <span id="mat-curso">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Nivel:</strong>
-      <span id="mat-nivel">---</span>
+      <span id="mat-nivel">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Turno:</strong>
-      <span id="mat-turno">---</span>
+      <span id="mat-turno">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Gestión:</strong>
-      <span id="mat-gestion">---</span>
+      <span id="mat-gestion">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Fecha de Registro:</strong>
-      <span id="mat-fecha">---</span>
+      <span id="mat-fecha">Cargando...</span>
     </div>
 
     <div class="campo">
       <strong>Estado:</strong>
-      <span id="mat-estado" class="estado-badge">---</span>
+      <span id="mat-estado" class="estado-badge">Cargando...</span>
     </div>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
+  <!-- SDK de Supabase y JS independiente para matrícula del estudiante visto por el tutor -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="matriculaEstTutor.js"></script>
 
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      function toggleSubMenu(idSubMenu) {
-          const submenu = document.getElementById(idSubMenu);
-          const boton = submenu.previousElementSibling;
-          submenu.classList.toggle('abierto');
-          boton.classList.toggle('activo');
-      }
-
-      // --- LEER EL ID DEL ESTUDIANTE DESDE LA URL (ej: ?id=1 o ?id=2) ---
-      const urlParams = new URLSearchParams(window.location.search);
-      const estudianteId = urlParams.get('id') || '1';
-
-      // Base de datos simulada para la matrícula de los estudiantes
-      const baseDatosMatricula = {
-          '1': {
-              idMatricula: "MAT-2026-0849",
-              estudiante: "Mateo Alejandro Vargas Quispe",
-              curso: '3° de Secundaria ("A")',
-              nivel: "Secundaria Comunitaria Productiva",
-              turno: "Mañana",
-              gestion: "2026",
-              fecha: "15/01/2026",
-              estado: "Pagado"
-          },
-          '2': {
-              idMatricula: "MAT-2026-0912",
-              estudiante: "Lucía Fernanda Vargas Quispe",
-              curso: '1° de Secundaria ("B")',
-              nivel: "Secundaria Comunitaria Productiva",
-              turno: "Tarde",
-              gestion: "2026",
-              fecha: "18/01/2026",
-              estado: "Pendiente"
-          }
-      };
-
-      // Seleccionar los datos del estudiante actual
-      const matriculaActual = baseDatosMatricula[estudianteId] || baseDatosMatricula['1'];
-
-      // Inyectar datos en los elementos HTML
-      document.getElementById('mat-id').textContent = matriculaActual.idMatricula;
-      document.getElementById('mat-estudiante').textContent = matriculaActual.estudiante;
-      document.getElementById('mat-curso').textContent = matriculaActual.curso;
-      document.getElementById('mat-nivel').textContent = matriculaActual.nivel;
-      document.getElementById('mat-turno').textContent = matriculaActual.turno;
-      document.getElementById('mat-gestion').textContent = matriculaActual.gestion;
-      document.getElementById('mat-fecha').textContent = matriculaActual.fecha;
-
-      const spanEstado = document.getElementById('mat-estado');
-      spanEstado.textContent = matriculaActual.estado;
-
-      // Lógica de color para el estado
-      const textoEstado = matriculaActual.estado.trim().toLowerCase();
-      spanEstado.className = "estado-badge"; 
-
-      if (textoEstado === 'pagado' || textoEstado === 'pagada') {
-          spanEstado.classList.add('estado-verde');
-      } else {
-          spanEstado.classList.add('estado-rojo');
-      }
-  </script>
 </body>
 </html>

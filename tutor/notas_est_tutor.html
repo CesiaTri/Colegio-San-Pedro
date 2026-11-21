@@ -298,7 +298,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Tutor</div>
       <div style="width: 75px;"></div>
   </header>
@@ -311,7 +311,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           <nav class="lista-opciones">
               <a href="perfil_tutor.html" class="opcion-menu">Perfil</a>
@@ -321,7 +321,7 @@
 
               <!-- Botón Desplegable: Perfil -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
                   <div class="sub-menu" id="sub-perfil">
                       <a href="perfil_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="perfil_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -330,7 +330,7 @@
 
               <!-- Botón Desplegable: Notas -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
                   <div class="sub-menu abierto" id="sub-notas">
                       <a href="notas_est_tutor.html?id=1" class="sub-opcion activa">Mateo Vargas (Estudiante 1)</a>
                       <a href="notas_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -339,7 +339,7 @@
 
               <!-- Botón Desplegable: Horario -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
                   <div class="sub-menu" id="sub-horario">
                       <a href="horario_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="horario_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -348,7 +348,7 @@
 
               <!-- Botón Desplegable: Matrícula -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
                   <div class="sub-menu" id="sub-matricula">
                       <a href="matricula_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="matricula_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -357,7 +357,7 @@
 
               <!-- Botón Desplegable: Asistencia -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
                   <div class="sub-menu" id="sub-asistencia">
                       <a href="asistencia_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="asistencia_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -367,17 +367,17 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Notas -->
   <main class="notas-container">
     <h1>Registro de Calificaciones</h1>
     
-    <!-- Datos del Alumno de Ejemplo -->
+    <!-- Datos del Alumno -->
     <div class="info-bloque">
-      <div class="info-linea"><strong>Estudiante:</strong> Mateo Alejandro Vargas Quispe</div>
-      <div class="info-linea"><strong>Curso:</strong> 3° "A" de Secundaria | <strong>Turno:</strong> Mañana</div>
+      <div class="info-linea"><strong>Estudiante:</strong> Cargando...</div>
+      <div class="info-linea"><strong>Curso:</strong> Cargando... | <strong>Turno:</strong> Cargando...</div>
     </div>
 
     <!-- Cuadrícula / Tabla de Calificaciones -->
@@ -392,77 +392,14 @@
         </tr>
       </thead>
       <tbody id="cuerpo-tabla-notas">
-        <!-- Los datos se inyectarán aquí -->
+        <tr><td colspan="5" style="text-align:center;">Cargando calificaciones...</td></tr>
       </tbody>
     </table>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
-
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      // Función para desplegar los submenús de los estudiantes en el menú
-      function toggleSubMenu(idSubMenu) {
-          const submenu = document.getElementById(idSubMenu);
-          const boton = submenu.previousElementSibling;
-          
-          submenu.classList.toggle('abierto');
-          boton.classList.toggle('activo');
-      }
-
-      // Datos de ejemplo con materias y notas (incluyendo una reprobada para probar el rojo)
-      const listaNotas = [
-          { materia: "Matemáticas", n1: 45, n2: 48, n3: 50 }, // Nota final baja (<51) -> se pintará de rojo
-          { materia: "Lenguaje y Literatura", n1: 82, n2: 85, n3: 88 },
-          { materia: "Física", n1: 60, n2: 58, n3: 65 },
-          { materia: "Química", n1: 75, n2: 70, n3: 72 },
-          { materia: "Biología", n1: 90, n2: 88, n3: 92 },
-          { materia: "Ciencias Sociales", n1: 78, n2: 80, n3: 82 },
-          { materia: "Educación Física", n1: 95, n2: 95, n3: 98 },
-          { materia: "Artes Plásticas", n1: 88, n2: 85, n3: 90 }
-      ];
-
-      const tbody = document.getElementById('cuerpo-tabla-notas');
-
-      listaNotas.forEach(item => {
-          // Calcula el promedio / nota final de los 3 trimestres
-          const notaFinal = Math.round((item.n1 + item.n2 + item.n3) / 3);
-
-          const tr = document.createElement('tr');
-
-          // Si la nota final es menor a 51, agregamos la clase para pintarla de rojo suave
-          if (notaFinal < 51) {
-              tr.classList.add('fila-reprobada');
-          }
-
-          tr.innerHTML = `
-              <td>${item.materia}</td>
-              <td>${item.n1}</td>
-              <td>${item.n2}</td>
-              <td>${item.n3}</td>
-              <td><strong>${notaFinal}</strong></td>
-          `;
-
-          tbody.appendChild(tr);
-      });
-  </script>
+  <!-- SDK de Supabase y JS independiente para notas del estudiante visto por el tutor -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="notasEstTutor.js"></script>
 
 </body>
 </html>

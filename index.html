@@ -183,46 +183,8 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('formLogin').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evita que la página se recargue al enviar
-
-            // Obtener valores y limpiar espacios extra
-            const correo = document.getElementById('correo').value.trim().toLowerCase();
-            const password = document.getElementById('password').value.trim();
-            const mensajeError = document.getElementById('mensajeError');
-
-            // Diccionario de usuarios permitidos y sus rutas correspondientes
-            const usuarios = {
-                'estudiante@gmail.com': {
-                    pass: 'estudiante',
-                    ruta: 'estudiante/perfil_estudiante.html'
-                },
-                'profesor@gmail.com': {
-                    pass: 'profesor',
-                    ruta: 'profesor/perfil_profesor.html'
-                },
-                'tutor@gmail.com': {
-                    pass: 'tutor',
-                    ruta: 'tutor/perfil_tutor.html'
-                },
-                'administrativo@gmail.com': {
-                    pass: 'administrativo',
-                    ruta: 'administrativo/perfil_administrativo.html'
-                }
-            };
-
-            // Verificar si el correo existe y si la contraseña coincide
-            if (usuarios[correo] && usuarios[correo].pass === password) {
-                mensajeError.style.display = 'none';
-                // Redirigir a la subcarpeta correspondiente
-                window.location.href = usuarios[correo].ruta;
-            } else {
-                // Mostrar alerta de error
-                mensajeError.style.display = 'block';
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="indexProgra.js"></script>
 
 </body>
 </html>

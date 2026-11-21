@@ -261,7 +261,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Profesor</div>
       <div style="width: 75px;"></div>
   </header>
@@ -274,7 +274,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           
           <nav class="lista-opciones">
@@ -290,7 +290,7 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Horario -->
@@ -311,7 +311,7 @@
         </tr>
       </thead>
       <tbody id="cuerpo-tabla-mañana">
-        <!-- Generado dinámicamente -->
+        <tr><td colspan="6">Cargando horario...</td></tr>
       </tbody>
     </table>
 
@@ -329,132 +329,13 @@
         </tr>
       </thead>
       <tbody id="cuerpo-tabla-tarde">
-        <!-- Generado dinámicamente -->
+        <tr><td colspan="6">Cargando horario...</td></tr>
       </tbody>
     </table>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
-
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      // --- DATOS DE PRUEBA Y GENERACIÓN DE TABLAS (MAÑANA Y TARDE) ---
-      
-      const bloquesMañana = [
-          { hora: "8:00 a 9:00", tipo: "clase", datos: [
-              { materia: "Matemáticas", curso: "3° A" },
-              { materia: "Matemáticas", curso: "3° B" },
-              { materia: "Álgebra", curso: "4° A" },
-              { materia: "Matemáticas", curso: "3° A" },
-              { materia: "Álgebra", curso: "4° B" }
-          ]},
-          { hora: "9:00 a 10:00", tipo: "clase", datos: [
-              { materia: "Cálculo", curso: "5° A" },
-              { materia: "Matemáticas", curso: "3° B" },
-              { materia: "Cálculo", curso: "5° B" },
-              { materia: "Matemáticas", curso: "3° A" },
-              { materia: "Cálculo", curso: "5° A" }
-          ]},
-          { hora: "10:00 a 10:15", tipo: "recreo", texto: "RECREO" },
-          { hora: "10:15 a 11:15", tipo: "clase", datos: [
-              { materia: "Geometría", curso: "2° A" },
-              { materia: "Geometría", curso: "2° B" },
-              { materia: "Matemáticas", curso: "3° B" },
-              { materia: "Geometría", curso: "2° A" },
-              { materia: "Álgebra", curso: "4° A" }
-          ]},
-          { hora: "11:15 a 12:15", tipo: "clase", datos: [
-              { materia: "Trigonometría", curso: "6° A" },
-              { materia: "Trigonometría", curso: "6° B" },
-              { materia: "Geometría", curso: "2° B" },
-              { materia: "Trigonometría", curso: "6° A" },
-              { materia: "Matemáticas", curso: "3° B" }
-          ]}
-      ];
-
-      const bloquesTarde = [
-          { hora: "1:30 a 2:30", tipo: "clase", datos: [
-              { materia: "Matemáticas", curso: "1° A" },
-              { materia: "Álgebra", curso: "2° A" },
-              { materia: "Matemáticas", curso: "1° B" },
-              { materia: "Álgebra", curso: "2° B" },
-              { materia: "Matemáticas", curso: "1° A" }
-          ]},
-          { hora: "2:30 a 3:30", tipo: "clase", datos: [
-              { materia: "Geometría", curso: "1° B" },
-              { materia: "Matemáticas", curso: "1° A" },
-              { materia: "Geometría", curso: "1° A" },
-              { materia: "Matemáticas", curso: "1° B" },
-              { materia: "Álgebra", curso: "2° A" }
-          ]},
-          { hora: "3:30 a 3:45", tipo: "recreo", texto: "RECREO" },
-          { hora: "3:45 a 4:45", tipo: "clase", datos: [
-              { materia: "Aritmética", curso: "1° A" },
-              { materia: "Aritmética", curso: "1° B" },
-              { materia: "Álgebra", curso: "2° A" },
-              { materia: "Aritmética", curso: "1° A" },
-              { materia: "Geometría", curso: "1° B" }
-          ]},
-          { hora: "4:45 a 5:45", tipo: "clase", datos: [
-              { materia: "Razonamiento", curso: "2° B" },
-              { materia: "Razonamiento", curso: "2° A" },
-              { materia: "Aritmética", curso: "1° B" },
-              { materia: "Razonamiento", curso: "2° B" },
-              { materia: "Aritmética", curso: "1° A" }
-          ]}
-      ];
-
-      function llenarTabla(bloques, idTbody) {
-          const tbody = document.getElementById(idTbody);
-          tbody.innerHTML = "";
-
-          bloques.forEach(bloque => {
-              const tr = document.createElement('tr');
-
-              if (bloque.tipo === "recreo") {
-                  tr.className = "fila-recreo";
-                  tr.innerHTML = `
-                      <td class="hora">${bloque.hora}</td>
-                      <td colspan="5">${bloque.texto}</td>
-                  `;
-              } else {
-                  let celdasHTML = `<td class="hora">${bloque.hora}</td>`;
-                  bloque.datos.forEach(item => {
-                      celdasHTML += `
-                          <td>
-                              <span class="materia-texto">${item.materia}</span>
-                              <span class="curso-texto">${item.curso}</span>
-                          </td>
-                      `;
-                  });
-                  tr.innerHTML = celdasHTML;
-              }
-              tbody.appendChild(tr);
-          });
-      }
-
-      // Ejecutar la generación de las tablas al cargar la página
-      llenarTabla(bloquesMañana, 'cuerpo-tabla-mañana');
-      llenarTabla(bloquesTarde, 'cuerpo-tabla-tarde');
-  </script>
-
-  <script src="horarioProfesor.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
+  <!-- SDK de Supabase y JS independiente para horario del profesor -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="horarioProfesor.js"></script>
 </body>
 </html>

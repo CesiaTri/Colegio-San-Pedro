@@ -221,7 +221,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Estudiante</div>
       <div style="width: 75px;"></div>
   </header>
@@ -234,7 +234,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           <nav class="lista-opciones">
               <a href="perfil_estudiante.html" class="opcion-menu">Perfil</a>
@@ -247,7 +247,7 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Horario -->
@@ -271,76 +271,9 @@
     </table>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
+  <!-- SDK de Supabase y JS independiente para horario del estudiante -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="horarioEstudiante.js"></script>
 
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      // --- CONFIGURACIÓN DE TURNOS Y DATOS DE PRUEBA ---
-      const turnoEstudiante = "tarde"; 
-
-      let bloquesHorarios = [];
-
-      if (turnoEstudiante === "mañana") {
-          bloquesHorarios = [
-              { hora: "8:00 a 9:00", tipo: "clase", materias: ["Matemáticas", "Lenguaje", "Física", "Química", "Biología"] },
-              { hora: "9:00 a 10:00", tipo: "clase", materias: ["Sociales", "Matemáticas", "Inglés", "Lenguaje", "Física"] },
-              { hora: "10:00 a 10:15", tipo: "recreo", texto: "RECREO" },
-              { hora: "10:15 a 11:15", tipo: "clase", materias: ["Artes Plásticas", "Biología", "Sociales", "Música", "Matemáticas"] },
-              { hora: "11:15 a 12:15", tipo: "clase", materias: ["Educación Física", "Química", "Informática", "Religión", "Inglés"] }
-          ];
-      } else {
-          bloquesHorarios = [
-              { hora: "1:30 a 2:30", tipo: "clase", materias: ["Matemáticas", "Lenguaje", "Física", "Química", "Biología"] },
-              { hora: "2:30 a 3:30", tipo: "clase", materias: ["Sociales", "Matemáticas", "Inglés", "Lenguaje", "Física"] },
-              { hora: "3:30 a 3:45", tipo: "recreo", texto: "RECREO" },
-              { hora: "3:45 a 4:45", tipo: "clase", materias: ["Artes Plásticas", "Biología", "Sociales", "Música", "Matemáticas"] },
-              { hora: "4:45 a 5:45", tipo: "clase", materias: ["Educación Física", "Química", "Informática", "Religión", "Inglés"] }
-          ];
-      }
-
-      const tbodyHorario = document.getElementById('cuerpo-tabla-horario');
-
-      bloquesHorarios.forEach(bloque => {
-          const tr = document.createElement('tr');
-
-          if (bloque.tipo === "recreo") {
-              tr.className = "fila-recreo";
-              tr.innerHTML = `
-                  <td class="hora">${bloque.hora}</td>
-                  <td colspan="5">${bloque.texto}</td>
-              `;
-          } else {
-              tr.innerHTML = `
-                  <td class="hora">${bloque.hora}</td>
-                  <td>${bloque.materias[0]}</td>
-                  <td>${bloque.materias[1]}</td>
-                  <td>${bloque.materias[2]}</td>
-                  <td>${bloque.materias[3]}</td>
-                  <td>${bloque.materias[4]}</td>
-              `;
-          }
-
-          tbodyHorario.appendChild(tr);
-      });
-  </script>
-
-  <script src="horarioEstudiante.js" onerror="console.log('Script externo no requerido, usando datos locales.')"></script>
 </body>
 </html>

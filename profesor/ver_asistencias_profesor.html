@@ -348,7 +348,7 @@
 
     <!-- PANEL SUPERIOR -->
     <header class="barra-superior">
-        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
         <div class="titulo-rol">Profesor</div>
         <div style="width: 75px;"></div>
     </header>
@@ -361,7 +361,7 @@
         <div>
             <div class="menu-encabezado">
                 <span>Colegio "San Pedro"</span>
-                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
             </div>
             
             <nav class="lista-opciones">
@@ -377,7 +377,7 @@
         </div>
 
         <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+        <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -392,9 +392,9 @@
             <!-- Datos de la materia y selector de mes -->
             <div class="info-selector-bar">
                 <div class="datos-curso-detalle">
-                    <span><strong>Materia:</strong> Matemáticas</span>
-                    <span><strong>Curso:</strong> 3° A</span>
-                    <span><strong>Turno:</strong> Mañana</span>
+                    <span><strong>Materia:</strong> Cargando...</span>
+                    <span><strong>Curso:</strong> Cargando...</span>
+                    <span><strong>Turno:</strong> Cargando...</span>
                 </div>
                 
                 <div class="contenedor-select-mes">
@@ -414,11 +414,10 @@
                     <thead>
                         <tr id="fila-encabezado-dias">
                             <th class="columna-estudiante">Estudiante</th>
-                            <!-- Los días se generan dinámicamente -->
                         </tr>
                     </thead>
                     <tbody id="cuerpo-tabla-asistencias">
-                        <!-- Generado dinámicamente -->
+                        <tr><td>Cargando asistencias...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -426,90 +425,9 @@
         </section>
     </main>
 
-    <script>
-        // Control del menú lateral
-        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-        const menuLateral = document.getElementById('menuLateral');
-        const overlay = document.getElementById('overlay');
-
-        function abrirMenu() {
-            menuLateral.classList.add('abierto');
-            overlay.classList.add('activo');
-        }
-
-        function cerrarMenu() {
-            menuLateral.classList.remove('abierto');
-            overlay.classList.remove('activo');
-        }
-
-        btnAbrirMenu.addEventListener('click', abrirMenu);
-        btnCerrarMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-
-        // --- GENERADOR DE CUADRÍCULA DE ASISTENCIA MENSUAL ---
-        const selectMes = document.getElementById('select-mes');
-        const filaEncabezado = document.getElementById('fila-encabezado-dias');
-        const cuerpoTabla = document.getElementById('cuerpo-tabla-asistencias');
-
-        // Lista de estudiantes de ejemplo para el curso 3° A
-        const listaEstudiantes = [
-            "Alarcón Pérez, Juan Carlos",
-            "Flores Mamani, María Elena",
-            "Gutiérrez Rojas, Rodrigo",
-            "Paz Condori, Andrea Sofía",
-            "Vargas Quispe, Mateo Alejandro"
-        ];
-
-        function generarCuadriculaAsistencia(mesIndex) {
-            const anio = 2026;
-            const totalDias = new Date(anio, mesIndex + 1, 0).getDate();
-
-            // 1. Construir encabezado de días (1 hasta el total de días del mes)
-            let thHTML = '<th class="columna-estudiante">Estudiante</th>';
-            for (let dia = 1; dia <= totalDias; dia++) {
-                thHTML += `<th>${dia}</th>`;
-            }
-            filaEncabezado.innerHTML = thHTML;
-
-            // 2. Construir filas por cada estudiante
-            cuerpoTabla.innerHTML = "";
-            listaEstudiantes.forEach((estudiante, idx) => {
-                const tr = document.createElement('tr');
-                let tdHTML = `<td class="columna-estudiante">${estudiante}</td>`;
-
-                for (let dia = 1; dia <= totalDias; dia++) {
-                    const fechaActual = new Date(anio, mesIndex, dia);
-                    const esDomingo = fechaActual.getDay() === 0;
-
-                    if (esDomingo) {
-                        tdHTML += `<td><span class="badge-estado estado-sin-clases" title="Sin clases">--</span></td>`;
-                    } else {
-                        // Simulación de estados: '✓' para presente, '✗' para ausente
-                        let asistio = true;
-                        if ((dia + idx) % 7 === 0) {
-                            asistio = false;
-                        }
-                        
-                        const simbolo = asistio ? "✓" : "✗";
-                        const claseBadge = asistio ? "estado-presente" : "estado-ausente";
-                        tdHTML += `<td><span class="badge-estado ${claseBadge}">${simbolo}</span></td>`;
-                    }
-                }
-
-                tr.innerHTML = tdHTML;
-                cuerpoTabla.appendChild(tr);
-            });
-        }
-
-        // Cargar por defecto con el valor seleccionado (Noviembre = 10)
-        generarCuadriculaAsistencia(parseInt(selectMes.value));
-
-        // Actualizar al cambiar de mes
-        selectMes.addEventListener('change', function() {
-            generarCuadriculaAsistencia(parseInt(this.value));
-        });
-    </script>
+    <!-- Scripts separados e independientes -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="verAsistenciasProfesor.js"></script>
 
 </body>
 </html>

@@ -358,7 +358,7 @@
         </div>
 
         <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+        <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
     </aside>
 
     <!-- PANEL INFERIOR DE DATOS DEL ESTUDIANTE -->
@@ -369,80 +369,55 @@
             <div class="lista-datos">
                 <div class="fila-dato">
                     <span class="etiqueta">CI:</span>
-                    <span class="valor" id="dato-ci">8493021 CB</span>
+                    <span class="valor" id="dato-ci">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Nombre:</span>
-                    <span class="valor" id="dato-nombre">Mateo Alejandro</span>
+                    <span class="valor" id="dato-nombre">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Apellido:</span>
-                    <span class="valor" id="dato-apellido">Vargas Quispe</span>
+                    <span class="valor" id="dato-apellido">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Teléfono:</span>
-                    <span class="valor" id="dato-telefono">72489103</span>
+                    <span class="valor" id="dato-telefono">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Dirección:</span>
-                    <span class="valor" id="dato-direccion">Av. América Este #452, Zona Queru Queru</span>
+                    <span class="valor" id="dato-direccion">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Fecha de nacimiento:</span>
-                    <span class="valor" id="dato-nacimiento">14/05/2010</span>
+                    <span class="valor" id="dato-nacimiento">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Curso:</span>
-                    <span class="valor" id="dato-curso">3° "A" de Secundaria</span>
+                    <span class="valor" id="dato-curso">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Turno:</span>
-                    <span class="valor" id="dato-turno">Mañana</span>
+                    <span class="valor" id="dato-turno">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Código RUDE:</span>
-                    <span class="valor" id="dato-rude">8098004520161234</span>
+                    <span class="valor" id="dato-rude">Cargando...</span>
                 </div>
             </div>
         </section>
     </main>
 
-    <script>
-        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-        const menuLateral = document.getElementById('menuLateral');
-        const overlay = document.getElementById('overlay');
-
-        function abrirMenu() {
-            menuLateral.classList.add('abierto');
-            overlay.classList.add('activo');
-        }
-
-        function cerrarMenu() {
-            menuLateral.classList.remove('abierto');
-            overlay.classList.remove('activo');
-        }
-
-        btnAbrirMenu.addEventListener('click', abrirMenu);
-        btnCerrarMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-
-        function toggleSubMenu(idSubMenu) {
-            const submenu = document.getElementById(idSubMenu);
-            const boton = submenu.previousElementSibling;
-
-            submenu.classList.toggle('abierto');
-            boton.classList.toggle('activo');
-        }
-    </script>
+    <!-- SDK de Supabase y JS independiente para el perfil del estudiante visto por el tutor -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="perfilEstTutor.js"></script>
 
 </body>
 </html>

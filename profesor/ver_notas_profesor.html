@@ -290,7 +290,7 @@
 
     <!-- PANEL SUPERIOR -->
     <header class="barra-superior">
-        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
         <div class="titulo-rol">Profesor</div>
         <div style="width: 75px;"></div>
     </header>
@@ -303,7 +303,7 @@
         <div>
             <div class="menu-encabezado">
                 <span>Colegio "San Pedro"</span>
-                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
             </div>
             
             <nav class="lista-opciones">
@@ -319,7 +319,7 @@
         </div>
 
         <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+        <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -333,9 +333,9 @@
 
             <!-- Datos de la materia -->
             <div class="info-curso-bar">
-                <span><strong>Materia:</strong> Matemáticas</span>
-                <span><strong>Curso:</strong> 3° A</span>
-                <span><strong>Turno:</strong> Mañana</span>
+                <span><strong>Materia:</strong> Cargando...</span>
+                <span><strong>Curso:</strong> Cargando...</span>
+                <span><strong>Turno:</strong> Cargando...</span>
             </div>
 
             <!-- Tabla de Notas -->
@@ -351,7 +351,7 @@
                         </tr>
                     </thead>
                     <tbody id="cuerpo-tabla-notas">
-                        <!-- Generado dinámicamente -->
+                        <tr><td colspan="5">Cargando notas...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -359,65 +359,9 @@
         </section>
     </main>
 
-    <script>
-        // Control del menú lateral
-        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-        const menuLateral = document.getElementById('menuLateral');
-        const overlay = document.getElementById('overlay');
-
-        function abrirMenu() {
-            menuLateral.classList.add('abierto');
-            overlay.classList.add('activo');
-        }
-
-        function cerrarMenu() {
-            menuLateral.classList.remove('abierto');
-            overlay.classList.remove('activo');
-        }
-
-        btnAbrirMenu.addEventListener('click', abrirMenu);
-        btnCerrarMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-
-        // --- CARGA DE NOTAS DE ESTUDIANTES ---
-        const cuerpoTablaNotas = document.getElementById('cuerpo-tabla-notas');
-
-        // Lista de estudiantes con sus notas trimestrales y nota final
-        const listaNotasEstudiantes = [
-            { nombre: "Alarcón Pérez, Juan Carlos", t1: 75, t2: 80, t3: 82, final: 79 },
-            { nombre: "Flores Mamani, María Elena", t1: 45, t2: 50, t3: 48, final: 47 }, // Reprobado (< 51)
-            { nombre: "Gutiérrez Rojas, Rodrigo", t1: 90, t2: 88, t3: 92, final: 90 },
-            { nombre: "Paz Condori, Andrea Sofía", t1: 60, t2: 65, t3: 70, final: 65 },
-            { nombre: "Vargas Quispe, Mateo Alejandro", t1: 38, t2: 42, t3: 45, final: 42 } // Reprobado (< 51)
-        ];
-
-        function cargarTablaNotas() {
-            cuerpoTablaNotas.innerHTML = "";
-
-            listaNotasEstudiantes.forEach(estudiante => {
-                const tr = document.createElement('tr');
-
-                // Si la nota final es menor a 51, agregamos la clase CSS
-                if (estudiante.final < 51) {
-                    tr.className = "fila-reprobada";
-                }
-
-                tr.innerHTML = `
-                    <td class="columna-estudiante">${estudiante.nombre}</td>
-                    <td>${estudiante.t1}</td>
-                    <td>${estudiante.t2}</td>
-                    <td>${estudiante.t3}</td>
-                    <td><strong>${estudiante.final}</strong></td>
-                `;
-
-                cuerpoTablaNotas.appendChild(tr);
-            });
-        }
-
-        // Ejecutar carga de la tabla al iniciar
-        cargarTablaNotas();
-    </script>
+    <!-- SDK de Supabase y JS independiente para ver notas del profesor -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="verNotasProfesor.js"></script>
 
 </body>
 </html>

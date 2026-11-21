@@ -369,7 +369,7 @@
 
     <!-- PANEL SUPERIOR -->
     <header class="barra-superior">
-        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
         <div class="titulo-rol">Profesor</div>
         <div style="width: 75px;"></div>
     </header>
@@ -382,7 +382,7 @@
         <div>
             <div class="menu-encabezado">
                 <span>Colegio "San Pedro"</span>
-                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
             </div>
             
             <nav class="lista-opciones">
@@ -398,7 +398,7 @@
         </div>
 
         <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+        <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -413,14 +413,14 @@
             <!-- Datos de la materia e ingreso de fecha -->
             <div class="info-selector-bar">
                 <div class="datos-curso-detalle">
-                    <span><strong>Materia:</strong> Matemáticas</span>
-                    <span><strong>Curso:</strong> 3° A</span>
-                    <span><strong>Turno:</strong> Mañana</span>
+                    <span><strong>Materia:</strong> Cargando...</span>
+                    <span><strong>Curso:</strong> Cargando...</span>
+                    <span><strong>Turno:</strong> Cargando...</span>
                 </div>
                 
                 <div class="contenedor-input-fecha">
                     <label for="input-fecha">Fecha:</label>
-                    <input type="date" id="input-fecha" class="input-fecha" value="2026-11-09">
+                    <input type="date" id="input-fecha" class="input-fecha" value="2026-11-20">
                 </div>
             </div>
 
@@ -433,92 +433,21 @@
                     </tr>
                 </thead>
                 <tbody id="cuerpo-tabla-registro">
-                    <!-- Generado dinámicamente -->
+                    <tr><td colspan="2">Cargando lista de estudiantes...</td></tr>
                 </tbody>
             </table>
 
             <!-- Botón Guardar -->
             <div class="contenedor-acciones-finales">
-                <button type="button" class="btn-guardar" onclick="guardarAsistencia()">Guardar Asistencia</button>
+                <button type="button" class="btn-guardar">Guardar Asistencia</button>
             </div>
 
         </section>
     </main>
 
-    <script>
-        // Control del menú lateral
-        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-        const menuLateral = document.getElementById('menuLateral');
-        const overlay = document.getElementById('overlay');
-
-        function abrirMenu() {
-            menuLateral.classList.add('abierto');
-            overlay.classList.add('activo');
-        }
-
-        function cerrarMenu() {
-            menuLateral.classList.remove('abierto');
-            overlay.classList.remove('activo');
-        }
-
-        btnAbrirMenu.addEventListener('click', abrirMenu);
-        btnCerrarMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-
-        // --- GENERADOR DE FILAS DE ESTUDIANTES CON BOTONES DE ESTADO ---
-        const cuerpoTablaRegistro = document.getElementById('cuerpo-tabla-registro');
-
-        const listaEstudiantes = [
-            "Alarcón Pérez, Juan Carlos",
-            "Flores Mamani, María Elena",
-            "Gutiérrez Rojas, Rodrigo",
-            "Paz Condori, Andrea Sofía",
-            "Vargas Quispe, Mateo Alejandro"
-        ];
-
-        function inicializarTablaRegistro() {
-            cuerpoTablaRegistro.innerHTML = "";
-
-            listaEstudiantes.forEach((estudiante, index) => {
-                const tr = document.createElement('tr');
-
-                tr.innerHTML = `
-                    <td class="columna-nombre">${estudiante}</td>
-                    <td class="columna-estado">
-                        <div class="grupo-botones-estado">
-                            <button type="button" class="btn-estado activo-presente" id="btn-p-${index}" onclick="cambiarEstado(${index}, 'presente')">Presente</button>
-                            <button type="button" class="btn-estado" id="btn-a-${index}" onclick="cambiarEstado(${index}, 'ausente')">Ausente</button>
-                        </div>
-                    </td>
-                `;
-
-                cuerpoTablaRegistro.appendChild(tr);
-            });
-        }
-
-        // Función para alternar visualmente el estado del botón seleccionado
-        function cambiarEstado(index, estado) {
-            const btnPresente = document.getElementById(`btn-p-${index}`);
-            const btnAusente = document.getElementById(`btn-a-${index}`);
-
-            if (estado === 'presente') {
-                btnPresente.className = "btn-estado activo-presente";
-                btnAusente.className = "btn-estado";
-            } else {
-                btnPresente.className = "btn-estado";
-                btnAusente.className = "btn-estado activo-ausente";
-            }
-        }
-
-        function guardarAsistencia() {
-            alert('¡Asistencia registrada exitosamente para la fecha seleccionada!');
-            window.location.href = 'asistencias_profesor.html';
-        }
-
-        // Cargar la tabla al iniciar
-        inicializarTablaRegistro();
-    </script>
+    <!-- SDK de Supabase y JS independiente para registrar asistencias del profesor -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="registrarAsistenciasProfesor.js"></script>
 
 </body>
 </html>

@@ -237,7 +237,7 @@
 
     <!-- PANEL SUPERIOR -->
     <header class="barra-superior">
-        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
         <div class="titulo-rol">Profesor</div>
         <div style="width: 75px;"></div>
     </header>
@@ -250,7 +250,7 @@
         <div>
             <div class="menu-encabezado">
                 <span>Colegio "San Pedro"</span>
-                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
             </div>
             
             <nav class="lista-opciones">
@@ -268,7 +268,7 @@
         </div>
 
         <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+        <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL: DATOS DEL PROFESOR -->
@@ -279,58 +279,40 @@
             <div class="lista-datos">
                 <div class="fila-dato">
                     <span class="etiqueta">CI:</span>
-                    <span class="valor" id="profesor-ci">4829103 CB</span>
+                    <span class="valor" id="profesor-ci">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Nombre:</span>
-                    <span class="valor" id="profesor-nombre">Marco Antonio</span>
+                    <span class="valor" id="profesor-nombre">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Apellido:</span>
-                    <span class="valor" id="profesor-apellido">Rojas Gutiérrez</span>
+                    <span class="valor" id="profesor-apellido">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Teléfono:</span>
-                    <span class="valor" id="profesor-telefono">78412963</span>
+                    <span class="valor" id="profesor-telefono">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Dirección:</span>
-                    <span class="valor" id="profesor-direccion">Calle Heroínas #842, Zona Central</span>
+                    <span class="valor" id="profesor-direccion">Cargando...</span>
                 </div>
 
                 <div class="fila-dato">
                     <span class="etiqueta">Especialidad:</span>
-                    <span class="valor" id="profesor-especialidad">Matemáticas</span>
+                    <span class="valor" id="profesor-especialidad">Cargando...</span>
                 </div>
             </div>
         </section>
     </main>
 
-    <script>
-        // Control del menú lateral
-        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-        const menuLateral = document.getElementById('menuLateral');
-        const overlay = document.getElementById('overlay');
-
-        function abrirMenu() {
-            menuLateral.classList.add('abierto');
-            overlay.classList.add('activo');
-        }
-
-        function cerrarMenu() {
-            menuLateral.classList.remove('abierto');
-            overlay.classList.remove('activo');
-        }
-
-        btnAbrirMenu.addEventListener('click', abrirMenu);
-        btnCerrarMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-    </script>
+    <!-- SDK de Supabase y JS independiente del perfil profesor -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="perfilProfesor.js"></script>
 
 </body>
 </html>

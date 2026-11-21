@@ -287,7 +287,7 @@
 
     <!-- PANEL SUPERIOR -->
     <header class="barra-superior">
-        <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+        <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
         <div class="titulo-rol">Profesor</div>
         <div style="width: 75px;"></div>
     </header>
@@ -300,7 +300,7 @@
         <div>
             <div class="menu-encabezado">
                 <span>Colegio "San Pedro"</span>
-                <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+                <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
             </div>
             
             <nav class="lista-opciones">
@@ -316,7 +316,7 @@
         </div>
 
         <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-        <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+        <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL: NOTAS -->
@@ -325,90 +325,18 @@
             <h2>Notas</h2>
             
             <div class="lista-clases">
-                <!-- Curso 1 -->
                 <div class="tarjeta-clase">
                     <div class="info-clase">
-                        <span class="materia-nombre">Matemáticas</span>
-                        <div class="detalles-curso">
-                            <span class="etiqueta-info">Curso: 3° A</span>
-                            <span class="etiqueta-info">Turno: Mañana</span>
-                        </div>
-                    </div>
-                    <div class="acciones-clase">
-                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
-                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
-                    </div>
-                </div>
-
-                <!-- Curso 2 -->
-                <div class="tarjeta-clase">
-                    <div class="info-clase">
-                        <span class="materia-nombre">Matemáticas</span>
-                        <div class="detalles-curso">
-                            <span class="etiqueta-info">Curso: 3° B</span>
-                            <span class="etiqueta-info">Turno: Mañana</span>
-                        </div>
-                    </div>
-                    <div class="acciones-clase">
-                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
-                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
-                    </div>
-                </div>
-
-                <!-- Curso 3 -->
-                <div class="tarjeta-clase">
-                    <div class="info-clase">
-                        <span class="materia-nombre">Álgebra</span>
-                        <div class="detalles-curso">
-                            <span class="etiqueta-info">Curso: 4° A</span>
-                            <span class="etiqueta-info">Turno: Mañana</span>
-                        </div>
-                    </div>
-                    <div class="acciones-clase">
-                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
-                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
-                    </div>
-                </div>
-
-                <!-- Curso 4 -->
-                <div class="tarjeta-clase">
-                    <div class="info-clase">
-                        <span class="materia-nombre">Cálculo</span>
-                        <div class="detalles-curso">
-                            <span class="etiqueta-info">Curso: 5° A</span>
-                            <span class="etiqueta-info">Turno: Tarde</span>
-                        </div>
-                    </div>
-                    <div class="acciones-clase">
-                        <a href="ver_notas_profesor.html" class="btn-accion btn-ver">Ver</a>
-                        <a href="registrar_notas_profesor.html" class="btn-accion btn-registrar">Registrar</a>
+                        <span class="materia-nombre">Cargando clases...</span>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <script>
-        // Control del menú lateral
-        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-        const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-        const menuLateral = document.getElementById('menuLateral');
-        const overlay = document.getElementById('overlay');
-
-        function abrirMenu() {
-            menuLateral.classList.add('abierto');
-            overlay.classList.add('activo');
-        }
-
-        function cerrarMenu() {
-            menuLateral.classList.remove('abierto');
-            overlay.classList.remove('activo');
-        }
-
-        btnAbrirMenu.addEventListener('click', abrirMenu);
-        btnCerrarMenu.addEventListener('click', cerrarMenu);
-        overlay.addEventListener('click', cerrarMenu);
-    </script>
+    <!-- SDK de Supabase y JS independiente para notas del profesor -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="notasProfesor.js"></script>
 
 </body>
 </html>

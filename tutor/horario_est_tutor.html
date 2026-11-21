@@ -227,42 +227,47 @@
 
     /* --- CONTENIDO PRINCIPAL: HORARIO --- */
     .horario-container {
-      max-width: 950px;
+      max-width: 900px;
       margin: 30px auto;
       background: white;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       border-top: 5px solid #1e3a8a;
-      width: 92%;
+      width: 90%;
     }
 
     .horario-container h1 {
+      margin-bottom: 20px;
       color: #1e3a8a;
       font-size: 24px;
       text-align: center;
-      margin-bottom: 25px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e2e8f0;
     }
 
-    .info-estudiante {
+    /* Información del Alumno */
+    .info-linea {
       text-align: center;
       font-size: 15px;
-      color: #475569;
-      margin-bottom: 20px;
-      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .info-bloque {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     /* Tabla / Cuadrícula de Horario */
     .tabla-horario {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 10px;
     }
 
     .tabla-horario th, .tabla-horario td {
       border: 1px solid #cbd5e1;
-      padding: 12px 8px;
+      padding: 10px 12px;
       text-align: center;
       font-size: 14px;
     }
@@ -271,22 +276,16 @@
       background-color: #f1f5f9;
       color: #1e293b;
       font-weight: bold;
-      text-transform: capitalize;
     }
 
-    .tabla-horario td.hora {
-      font-weight: bold;
+    .tabla-horario td:first-child {
+      font-weight: 600;
       background-color: #f8fafc;
-      color: #334155;
-      width: 140px;
+      color: #1e293b;
     }
 
-    /* Estilo para la fila de Recreo en Verde Agua Suave */
-    .fila-recreo {
-      background-color: #ccfbf1 !important;
-      font-weight: bold;
-      color: #115e59;
-      letter-spacing: 1.5px;
+    .col-hora {
+      width: 130px;
     }
   </style>
 </head>
@@ -294,7 +293,7 @@
 
   <!-- PANEL SUPERIOR -->
   <header class="barra-superior">
-      <button class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
+      <button type="button" class="btn-menu" id="btnAbrirMenu">☰ Menú</button>
       <div class="titulo-rol">Tutor</div>
       <div style="width: 75px;"></div>
   </header>
@@ -307,7 +306,7 @@
       <div>
           <div class="menu-encabezado">
               <span>Colegio "San Pedro"</span>
-              <button class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
+              <button type="button" class="btn-cerrar-menu" id="btnCerrarMenu">&times;</button>
           </div>
           <nav class="lista-opciones">
               <a href="perfil_tutor.html" class="opcion-menu">Perfil</a>
@@ -317,7 +316,7 @@
 
               <!-- Botón Desplegable: Perfil -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-perfil')">Perfil</button>
                   <div class="sub-menu" id="sub-perfil">
                       <a href="perfil_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="perfil_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -326,7 +325,7 @@
 
               <!-- Botón Desplegable: Notas -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-notas')">Notas</button>
                   <div class="sub-menu" id="sub-notas">
                       <a href="notas_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="notas_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -335,7 +334,7 @@
 
               <!-- Botón Desplegable: Horario -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-horario')">Horario</button>
                   <div class="sub-menu abierto" id="sub-horario">
                       <a href="horario_est_tutor.html?id=1" class="sub-opcion activa">Mateo Vargas (Estudiante 1)</a>
                       <a href="horario_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -344,7 +343,7 @@
 
               <!-- Botón Desplegable: Matrícula -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-matricula')">Matrícula</button>
                   <div class="sub-menu" id="sub-matricula">
                       <a href="matricula_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="matricula_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -353,7 +352,7 @@
 
               <!-- Botón Desplegable: Asistencia -->
               <div class="menu-desplegable-item">
-                  <button class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
+                  <button type="button" class="opcion-menu btn-desplegable" onclick="toggleSubMenu('sub-asistencia')">Asistencia</button>
                   <div class="sub-menu" id="sub-asistencia">
                       <a href="asistencia_est_tutor.html?id=1" class="sub-opcion">Mateo Vargas (Estudiante 1)</a>
                       <a href="asistencia_est_tutor.html?id=2" class="sub-opcion">Lucía Vargas (Estudiante 2)</a>
@@ -363,18 +362,24 @@
       </div>
 
       <!-- BOTÓN ROJO DE CERRAR SESIÓN -->
-      <a href="../index.html" class="btn-cerrar-sesion">Cerrar Sesión</a>
+      <a href="../index.html" class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</a>
   </aside>
 
   <!-- Contenido de Horario -->
   <main class="horario-container">
     <h1>Horario de Clases</h1>
-    <div class="info-estudiante" id="info-estudiante-texto">Estudiante: Mateo Alejandro Vargas Quispe (Turno Mañana)</div>
+    
+    <!-- Datos del Alumno -->
+    <div class="info-bloque">
+      <div class="info-linea"><strong>Estudiante:</strong> Cargando...</div>
+      <div class="info-linea"><strong>Curso:</strong> Cargando... | <strong>Turno:</strong> Cargando...</div>
+    </div>
 
+    <!-- Cuadrícula / Tabla de Horario -->
     <table class="tabla-horario">
       <thead>
         <tr>
-          <th>Hora</th>
+          <th class="col-hora">Hora</th>
           <th>Lunes</th>
           <th>Martes</th>
           <th>Miércoles</th>
@@ -383,99 +388,14 @@
         </tr>
       </thead>
       <tbody id="cuerpo-tabla-horario">
-        <!-- Generado dinámicamente -->
+        <tr><td colspan="6" style="text-align:center;">Cargando horario...</td></tr>
       </tbody>
     </table>
   </main>
 
-  <script>
-      // Control del menú lateral
-      const btnAbrirMenu = document.getElementById('btnAbrirMenu');
-      const btnCerrarMenu = document.getElementById('btnCerrarMenu');
-      const menuLateral = document.getElementById('menuLateral');
-      const overlay = document.getElementById('overlay');
+  <!-- SDK de Supabase y JS independiente para horario del estudiante visto por el tutor -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="horarioEstTutor.js"></script>
 
-      function abrirMenu() {
-          menuLateral.classList.add('abierto');
-          overlay.classList.add('activo');
-      }
-
-      function cerrarMenu() {
-          menuLateral.classList.remove('abierto');
-          overlay.classList.remove('activo');
-      }
-
-      btnAbrirMenu.addEventListener('click', abrirMenu);
-      btnCerrarMenu.addEventListener('click', cerrarMenu);
-      overlay.addEventListener('click', cerrarMenu);
-
-      function toggleSubMenu(idSubMenu) {
-          const submenu = document.getElementById(idSubMenu);
-          const boton = submenu.previousElementSibling;
-          submenu.classList.toggle('abierto');
-          boton.classList.toggle('activo');
-      }
-
-      // --- LEER EL ID DEL ESTUDIANTE DESDE LA URL (ej: ?id=1 o ?id=2) ---
-      const urlParams = new URLSearchParams(window.location.search);
-      const estudianteId = urlParams.get('id') || '1';
-
-      // Base de datos de horarios para los estudiantes
-      const baseDatosHorarios = {
-          '1': {
-              nombre: "Mateo Alejandro Vargas Quispe",
-              turno: "mañana",
-              bloques: [
-                  { hora: "8:00 a 9:00", tipo: "clase", materias: ["Matemáticas", "Lenguaje", "Física", "Química", "Biología"] },
-                  { hora: "9:00 a 10:00", tipo: "clase", materias: ["Sociales", "Matemáticas", "Inglés", "Lenguaje", "Física"] },
-                  { hora: "10:00 a 10:15", tipo: "recreo", texto: "RECREO" },
-                  { hora: "10:15 a 11:15", tipo: "clase", materias: ["Artes Plásticas", "Biología", "Sociales", "Música", "Matemáticas"] },
-                  { hora: "11:15 a 12:15", tipo: "clase", materias: ["Educación Física", "Química", "Informática", "Religión", "Inglés"] }
-              ]
-          },
-          '2': {
-              nombre: "Lucía Fernanda Vargas Quispe",
-              turno: "tarde",
-              bloques: [
-                  { hora: "1:30 a 2:30", tipo: "clase", materias: ["Biología", "Literatura", "Química", "Matemáticas", "Historia"] },
-                  { hora: "2:30 a 3:30", tipo: "clase", materias: ["Inglés", "Física", "Geografía", "Artes", "Civica"] },
-                  { hora: "3:30 a 3:45", tipo: "recreo", texto: "RECREO" },
-                  { hora: "3:45 a 4:45", tipo: "clase", materias: ["Música", "Computación", "Matemáticas", "Biología", "Deportes"] },
-                  { hora: "4:45 a 5:45", tipo: "clase", materias: ["Religión", "Sociales", "Química", "Literatura", "Física"] }
-              ]
-          }
-      };
-
-      const alumnoHorario = baseDatosHorarios[estudianteId] || baseDatosHorarios['1'];
-
-      // Actualizar texto informativo del estudiante
-      document.getElementById('info-estudiante-texto').textContent = `Estudiante: ${alumnoHorario.nombre} (Turno ${alumnoHorario.turno.charAt(0).toUpperCase() + alumnoHorario.turno.slice(1)})`;
-
-      const tbodyHorario = document.getElementById('cuerpo-tabla-horario');
-      tbodyHorario.innerHTML = "";
-
-      alumnoHorario.bloques.forEach(bloque => {
-          const tr = document.createElement('tr');
-
-          if (bloque.tipo === "recreo") {
-              tr.className = "fila-recreo";
-              tr.innerHTML = `
-                  <td class="hora">${bloque.hora}</td>
-                  <td colspan="5">${bloque.texto}</td>
-              `;
-          } else {
-              tr.innerHTML = `
-                  <td class="hora">${bloque.hora}</td>
-                  <td>${bloque.materias[0]}</td>
-                  <td>${bloque.materias[1]}</td>
-                  <td>${bloque.materias[2]}</td>
-                  <td>${bloque.materias[3]}</td>
-                  <td>${bloque.materias[4]}</td>
-              `;
-          }
-
-          tbodyHorario.appendChild(tr);
-      });
-  </script>
 </body>
 </html>
